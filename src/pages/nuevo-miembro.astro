@@ -26,8 +26,12 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                             <input type="text" id="input-nombre" required class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed" placeholder="Ej. Juan Pérez">
                         </div>
                         <div>
-                            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">Correo Electrónico</label>
-                            <input type="email" id="input-correo" required class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed" placeholder="juan@ejemplo.com">
+                            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">Correo Electrónico (Opcional)</label>
+                            <input type="email" id="input-correo" class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed" placeholder="juan@ejemplo.com">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">Fecha de Registro</label>
+                            <input type="date" id="input-fecha" onclick="this.showPicker()" class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed cursor-pointer" style="color-scheme: dark;">
                         </div>
                     </div>
                 </section>
@@ -68,6 +72,11 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
             const form = document.getElementById('form-nuevo-miembro');
             const overlay = document.getElementById('loading-overlay');
 
+            // Set today's date default
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('input-fecha');
+            if (dateInput) dateInput.value = today;
+
             // Cargar Membresías
             try {
                 const response = await fetch(getUrl);
@@ -77,28 +86,42 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                     grid.innerHTML = '';
                     result.datos.forEach((membresia, index) => {
                         const isRecommended = index === 1;
-                        const checked = index === 0 ? 'checked' : '';
+                        const isChecked = index === 0;
                         
                         const label = document.createElement('label');
-                        label.className = isRecommended 
-                            ? "flex flex-col p-4 border border-primary-fixed bg-primary-fixed/5 rounded-lg cursor-pointer transition-colors relative"
-                            : "flex flex-col p-4 border border-outline-variant rounded-lg cursor-pointer hover:border-primary-fixed hover:bg-primary-fixed/5 transition-colors group";
+                        label.className = isChecked 
+                            ? "plan-label flex flex-col p-4 border border-primary-fixed bg-primary-fixed/5 rounded-lg cursor-pointer transition-colors relative"
+                            : "plan-label flex flex-col p-4 border border-outline-variant rounded-lg cursor-pointer hover:border-primary-fixed hover:bg-primary-fixed/5 transition-colors group";
                         
                         let badge = isRecommended 
-                            ? `<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-container text-on-primary-container px-2 py-0.5 rounded text-xs font-bold font-label-caps">Recomendado</div>`
+                            ? `<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-container text-on-primary-container px-2 py-0.5 rounded text-xs font-bold font-label-caps whitespace-nowrap">Recomendado</div>`
                             : '';
 
-                        let titleClass = isRecommended 
-                            ? "font-headline-md text-headline-md text-primary-fixed"
-                            : "font-headline-md text-headline-md text-on-surface group-hover:text-primary-fixed transition-colors";
+                        let titleClass = isChecked 
+                            ? "plan-title font-headline-md text-headline-md text-primary-fixed"
+                            : "plan-title font-headline-md text-headline-md text-on-surface group-hover:text-primary-fixed transition-colors";
 
                         label.innerHTML = `
                             ${badge}
-                            <!-- Guardamos el nombre del plan en value en lugar del id, para enviarlo al script -->
-                            <input type="radio" name="planActual" class="hidden" value="${membresia.nombre}" ${checked} required>
+                            <input type="radio" name="planActual" class="hidden" value="${membresia.nombre}" ${isChecked ? 'checked' : ''} required>
                             <span class="${titleClass}">${membresia.nombre}</span>
                             <span class="font-body-md text-on-surface-variant mt-1">$${membresia.precio} / ${membresia.duracion} días</span>
                         `;
+                        
+                        // Add selection visual update logic via card click
+                        label.addEventListener('click', (e) => {
+                            // Prevenir múltiples triggers si el evento burbujea
+                            const radio = label.querySelector('input');
+                            radio.checked = true;
+
+                            document.querySelectorAll('.plan-label').forEach(l => {
+                                l.className = "plan-label flex flex-col p-4 border border-outline-variant rounded-lg cursor-pointer hover:border-primary-fixed hover:bg-primary-fixed/5 transition-colors group";
+                                l.querySelector('.plan-title').className = "plan-title font-headline-md text-headline-md text-on-surface group-hover:text-primary-fixed transition-colors";
+                            });
+                            label.className = "plan-label flex flex-col p-4 border border-primary-fixed bg-primary-fixed/5 rounded-lg cursor-pointer transition-colors relative";
+                            label.querySelector('.plan-title').className = "plan-title font-headline-md text-headline-md text-primary-fixed";
+                        });
+
                         grid.appendChild(label);
                     });
                 }
@@ -117,13 +140,14 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
 
                 const nombre = document.getElementById('input-nombre').value;
                 const correo = document.getElementById('input-correo').value;
+                const fechaRegistro = document.getElementById('input-fecha').value;
                 
                 // Buscar el plan seleccionado
                 const planInput = document.querySelector('input[name="planActual"]:checked');
                 const planActual = planInput ? planInput.value : '';
 
-                if (!nombre || !correo || !planActual) {
-                    alert('Por favor, completa todos los campos.');
+                if (!nombre || !planActual) {
+                    alert('Por favor, completa el nombre y selecciona un plan.');
                     overlay.classList.remove('flex');
                     overlay.classList.add('hidden');
                     return;
@@ -140,6 +164,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                             action: 'registrarMiembro',
                             nombre: nombre,
                             correo: correo,
+                            fechaRegistro: fechaRegistro,
                             planActual: planActual
                         })
                     });
