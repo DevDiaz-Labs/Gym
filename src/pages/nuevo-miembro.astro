@@ -1,0 +1,166 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+---
+
+<DashboardLayout title="Nuevo Miembro">
+    <div class="max-w-3xl mx-auto py-8 relative">
+        <div class="mb-8">
+            <h1 class="font-headline-lg text-headline-lg text-on-background mb-2">Registro de Nuevo Miembro</h1>
+            <p class="font-body-md text-on-surface-variant">Completa los datos para inscribir a un nuevo usuario en Titan Gym.</p>
+        </div>
+
+        <!-- Overlay de Carga General -->
+        <div id="loading-overlay" class="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 hidden flex-col items-center justify-center rounded-xl">
+            <span class="material-symbols-outlined animate-spin text-primary-fixed text-5xl mb-4">progress_activity</span>
+            <p class="font-headline-md text-on-surface">Procesando Registro...</p>
+        </div>
+
+        <div class="bg-surface-container border border-outline-variant rounded-xl p-8 shadow-sm relative">
+            <form id="form-nuevo-miembro" class="flex flex-col gap-6">
+                <!-- Información Personal -->
+                <section>
+                    <h2 class="font-headline-md text-headline-md text-primary-fixed mb-4 border-b border-outline-variant pb-2">Información Personal</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">Nombre Completo</label>
+                            <input type="text" id="input-nombre" required class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed" placeholder="Ej. Juan Pérez">
+                        </div>
+                        <div>
+                            <label class="block font-label-caps text-label-caps text-on-surface-variant mb-2">Correo Electrónico</label>
+                            <input type="email" id="input-correo" required class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed" placeholder="juan@ejemplo.com">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Membresía -->
+                <section class="mt-4 relative min-h-[150px]">
+                    <h2 class="font-headline-md text-headline-md text-primary-fixed mb-4 border-b border-outline-variant pb-2">Selección de Plan</h2>
+                    
+                    <div id="loading-membresias" class="absolute inset-0 flex items-center justify-center bg-surface-container/80 z-10">
+                        <span class="material-symbols-outlined animate-spin text-primary-fixed text-3xl">progress_activity</span>
+                    </div>
+
+                    <div id="planes-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Generado dinámicamente -->
+                    </div>
+                </section>
+
+                <!-- Acciones -->
+                <div class="flex justify-end gap-4 mt-8 pt-6 border-t border-outline-variant">
+                    <button type="button" class="px-6 py-3 border border-outline-variant text-on-surface hover:bg-surface-container-highest rounded-lg font-label-caps text-label-caps transition-colors" onclick="window.history.back()">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-8 py-3 bg-primary-container text-on-primary-container hover:bg-surface-tint rounded-lg font-label-caps text-label-caps flex items-center gap-2 transition-colors shadow-[0_0_15px_rgba(0,255,65,0.2)]">
+                        <span class="material-symbols-outlined">how_to_reg</span>
+                        Registrar y Cobrar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const getUrl = 'https://script.google.com/macros/s/AKfycbz-5zbcyoNX5sSrVp39Ocj6NbTqIP7XSHLti5o2AfrOl5dcD_-6mf2ieLN2XkldklCNAQ/exec?action=catalogoMembresias';
+            const postUrl = 'https://script.google.com/macros/s/AKfycbz-5zbcyoNX5sSrVp39Ocj6NbTqIP7XSHLti5o2AfrOl5dcD_-6mf2ieLN2XkldklCNAQ/exec';
+            const grid = document.getElementById('planes-grid');
+            const loading = document.getElementById('loading-membresias');
+            const form = document.getElementById('form-nuevo-miembro');
+            const overlay = document.getElementById('loading-overlay');
+
+            // Cargar Membresías
+            try {
+                const response = await fetch(getUrl);
+                const result = await response.json();
+
+                if (result.exito) {
+                    grid.innerHTML = '';
+                    result.datos.forEach((membresia, index) => {
+                        const isRecommended = index === 1;
+                        const checked = index === 0 ? 'checked' : '';
+                        
+                        const label = document.createElement('label');
+                        label.className = isRecommended 
+                            ? "flex flex-col p-4 border border-primary-fixed bg-primary-fixed/5 rounded-lg cursor-pointer transition-colors relative"
+                            : "flex flex-col p-4 border border-outline-variant rounded-lg cursor-pointer hover:border-primary-fixed hover:bg-primary-fixed/5 transition-colors group";
+                        
+                        let badge = isRecommended 
+                            ? `<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary-container text-on-primary-container px-2 py-0.5 rounded text-xs font-bold font-label-caps">Recomendado</div>`
+                            : '';
+
+                        let titleClass = isRecommended 
+                            ? "font-headline-md text-headline-md text-primary-fixed"
+                            : "font-headline-md text-headline-md text-on-surface group-hover:text-primary-fixed transition-colors";
+
+                        label.innerHTML = `
+                            ${badge}
+                            <!-- Guardamos el nombre del plan en value en lugar del id, para enviarlo al script -->
+                            <input type="radio" name="planActual" class="hidden" value="${membresia.nombre}" ${checked} required>
+                            <span class="${titleClass}">${membresia.nombre}</span>
+                            <span class="font-body-md text-on-surface-variant mt-1">$${membresia.precio} / ${membresia.duracion} días</span>
+                        `;
+                        grid.appendChild(label);
+                    });
+                }
+            } catch (err) {
+                console.error("Error cargando membresías", err);
+                grid.innerHTML = '<p class="text-error">Error cargando planes. Intenta recargar la página.</p>';
+            } finally {
+                loading.classList.add('hidden');
+            }
+
+            // Registrar Miembro (POST)
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+
+                const nombre = document.getElementById('input-nombre').value;
+                const correo = document.getElementById('input-correo').value;
+                
+                // Buscar el plan seleccionado
+                const planInput = document.querySelector('input[name="planActual"]:checked');
+                const planActual = planInput ? planInput.value : '';
+
+                if (!nombre || !correo || !planActual) {
+                    alert('Por favor, completa todos los campos.');
+                    overlay.classList.remove('flex');
+                    overlay.classList.add('hidden');
+                    return;
+                }
+
+                try {
+                    // Importante: Enviar 'Content-Type': 'text/plain' para evitar problemas de CORS preflight con GAS
+                    const postResponse = await fetch(postUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8'
+                        },
+                        body: JSON.stringify({
+                            action: 'registrarMiembro',
+                            nombre: nombre,
+                            correo: correo,
+                            planActual: planActual
+                        })
+                    });
+
+                    const postResult = await postResponse.json();
+
+                    if (postResult.exito) {
+                        alert(`¡Éxito! Miembro registrado con ID: ${postResult.idAsignado}`);
+                        // Redirigir o limpiar
+                        window.location.href = '/miembros'; 
+                    } else {
+                        alert('Error al registrar: ' + postResult.mensaje);
+                    }
+                } catch (error) {
+                    console.error('Error enviando datos', error);
+                    alert('Error de conexión al guardar el miembro.');
+                } finally {
+                    overlay.classList.remove('flex');
+                    overlay.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</DashboardLayout>

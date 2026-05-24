@@ -1,0 +1,52 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<aside class="bg-surface-container h-screen w-64 fixed left-0 top-0 border-r border-outline-variant flex flex-col py-stack-lg z-50">
+    <!-- Header -->
+    <div class="px-container-margin mb-8">
+        <h1 class="font-display-lg text-display-lg text-primary-fixed tracking-tight">Titan Gym</h1>
+        <p class="font-label-caps text-label-caps text-on-surface-variant mt-2 uppercase">Management Suite</p>
+    </div>
+    
+    <!-- Call to Action -->
+    <div class="px-container-margin mb-8">
+        <a href="/accesos" class="w-full bg-primary-fixed text-on-primary-fixed font-label-caps text-label-caps py-3 rounded-lg hover:brightness-110 active:scale-95 transition-all duration-100 flex items-center justify-center gap-2 uppercase tracking-widest text-center">
+            <span class="material-symbols-outlined text-[18px]">qr_code_scanner</span>
+            Registrar Entrada
+        </a>
+    </div>
+    
+    <!-- Navigation Tabs -->
+    <nav class="flex-1 flex flex-col gap-sm overflow-y-auto">
+
+        <a class={`flex items-center gap-base px-container-margin py-stack-md mx-2 rounded-lg transition-colors duration-100 active:scale-95 ${currentPath.startsWith('/miembros') ? 'bg-primary-container text-on-primary-container' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest'}`} href="/miembros">
+            <span class="material-symbols-outlined" style={currentPath.startsWith('/miembros') ? "font-variation-settings: 'FILL' 1;" : ""}>group</span>
+            <span class="font-label-caps text-label-caps uppercase">Miembros</span>
+        </a>
+        <a class={`flex items-center gap-base px-container-margin py-stack-md mx-2 rounded-lg transition-colors duration-100 active:scale-95 ${currentPath.startsWith('/accesos') ? 'bg-primary-container text-on-primary-container' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest'}`} href="/accesos">
+            <span class="material-symbols-outlined" style={currentPath.startsWith('/accesos') ? "font-variation-settings: 'FILL' 1;" : ""}>door_front</span>
+            <span class="font-label-caps text-label-caps uppercase">Accesos</span>
+        </a>
+        <a class={`flex items-center gap-base px-container-margin py-stack-md mx-2 rounded-lg transition-colors duration-100 active:scale-95 ${currentPath.startsWith('/finanzas') ? 'bg-primary-container text-on-primary-container' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest'}`} href="/finanzas">
+            <span class="material-symbols-outlined" style={currentPath.startsWith('/finanzas') ? "font-variation-settings: 'FILL' 1;" : ""}>payments</span>
+            <span class="font-label-caps text-label-caps uppercase">Finanzas</span>
+        </a>
+        <a class={`flex items-center gap-base px-container-margin py-stack-md mx-2 rounded-lg transition-colors duration-100 active:scale-95 ${currentPath.startsWith('/pos') ? 'bg-primary-container text-on-primary-container' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest'}`} href="/pos">
+            <span class="material-symbols-outlined" style={currentPath.startsWith('/pos') ? "font-variation-settings: 'FILL' 1;" : ""}>point_of_sale</span>
+            <span class="font-label-caps text-label-caps uppercase">POS</span>
+        </a>
+    </nav>
+    
+    <!-- Footer Tabs -->
+    <div class="mt-auto flex flex-col gap-sm pt-4 border-t border-outline-variant mx-4">
+        <a class="flex items-center gap-base px-container-margin py-stack-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-colors duration-100 rounded-lg active:scale-95" href="#">
+            <span class="material-symbols-outlined">settings</span>
+            <span class="font-label-caps text-label-caps uppercase">Ajustes</span>
+        </a>
+        <a class="flex items-center gap-base px-container-margin py-stack-md text-error hover:bg-surface-container-highest transition-colors duration-100 rounded-lg active:scale-95" href="#">
+            <span class="material-symbols-outlined">logout</span>
+            <span class="font-label-caps text-label-caps uppercase">Cerrar Sesión</span>
+        </a>
+    </div>
+</aside>

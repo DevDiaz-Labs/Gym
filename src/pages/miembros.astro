@@ -1,0 +1,221 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+---
+
+<DashboardLayout title="Gestión de Miembros">
+    <!-- Page Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-gutter mb-stack-lg">
+        <div>
+            <h2 class="font-headline-lg md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-stack-sm">Gestión de Miembros</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant">Administra el padrón, revisa estados de cuenta y controla accesos.</p>
+        </div>
+        <!-- Quick Stats Bento Row -->
+        <div class="flex gap-gutter overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
+            <div class="bg-surface-container border border-outline-variant rounded-lg p-4 min-w-[140px]">
+                <p class="font-label-caps text-label-caps text-on-surface-variant mb-1 uppercase">Total Activos</p>
+                <div class="flex items-end gap-2">
+                    <span id="stat-activos" class="font-metric-xl text-metric-xl text-primary-fixed">-</span>
+                </div>
+            </div>
+            <div class="bg-surface-container border border-outline-variant rounded-lg p-4 min-w-[140px]">
+                <p class="font-label-caps text-label-caps text-on-surface-variant mb-1 uppercase">En Riesgo / Vencidos</p>
+                <div class="flex items-end gap-2">
+                    <span id="stat-riesgo" class="font-metric-xl text-metric-xl text-secondary-fixed">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filters & Controls Bar -->
+    <div class="bg-surface-container border border-outline-variant rounded-t-lg p-4 flex flex-col sm:flex-row gap-gutter justify-between items-center">
+        <!-- Status Toggles -->
+        <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+            <button data-filter="todos" class="filter-btn px-4 py-1.5 rounded-full border border-primary-fixed bg-primary-fixed/10 text-primary-fixed font-label-caps text-label-caps hover:bg-primary-fixed/20 transition-colors">Todos</button>
+            <button data-filter="activo" class="filter-btn px-4 py-1.5 rounded-full border border-outline-variant text-on-surface-variant font-label-caps text-label-caps hover:bg-surface-bright transition-colors">Activos</button>
+            <button data-filter="inactivo" class="filter-btn px-4 py-1.5 rounded-full border border-outline-variant text-on-surface-variant font-label-caps text-label-caps hover:bg-surface-bright transition-colors">Inactivos / Vencidos</button>
+            <button data-filter="por-vencer" class="filter-btn px-4 py-1.5 rounded-full border border-outline-variant text-on-surface-variant font-label-caps text-label-caps hover:bg-surface-bright transition-colors">Próximos a vencer</button>
+        </div>
+        <!-- Secondary Filters -->
+        <div class="flex gap-2 w-full sm:w-auto">
+            <button id="btn-refresh" class="flex items-center gap-2 px-4 py-1.5 rounded border border-outline-variant bg-surface-container-highest text-on-surface font-label-caps text-label-caps hover:bg-surface-bright transition-colors">
+                <span class="material-symbols-outlined text-[18px]">refresh</span>
+                Actualizar
+            </button>
+        </div>
+    </div>
+    
+    <!-- Data Table Container -->
+    <div class="bg-surface-dim border-x border-b border-outline-variant rounded-b-lg overflow-hidden relative min-h-[400px]">
+        <!-- Loading State -->
+        <div id="loading-state" class="absolute inset-0 bg-surface-dim/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center">
+            <span class="material-symbols-outlined animate-spin text-primary-fixed text-4xl mb-4">progress_activity</span>
+            <p class="font-data-table text-on-surface-variant">Conectando con Google Sheets...</p>
+        </div>
+
+        <div class="overflow-x-auto table-scroll w-full">
+            <table class="w-full text-left border-collapse whitespace-nowrap min-w-[900px]">
+                <thead>
+                    <tr class="bg-surface-container-lowest border-b border-outline-variant">
+                        <th class="font-label-caps text-label-caps text-on-surface-variant py-4 px-6 sticky left-0 bg-surface-container-lowest z-10 w-12">#ID</th>
+                        <th class="font-label-caps text-label-caps text-on-surface-variant py-4 px-6 sticky left-12 bg-surface-container-lowest z-10 shadow-[4px_0_10px_-4px_rgba(0,0,0,0.5)]">Miembro</th>
+                        <th class="font-label-caps text-label-caps text-on-surface-variant py-4 px-6">Estatus</th>
+                        <th class="font-label-caps text-label-caps text-on-surface-variant py-4 px-6">Membresía</th>
+                        <th class="font-label-caps text-label-caps text-on-surface-variant py-4 px-6">Último Acceso</th>
+                        <th class="font-label-caps text-label-caps text-on-surface-variant py-4 px-6 text-right">Días restantes</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body" class="font-data-table text-data-table">
+                    <!-- Filas generadas dinámicamente aquí -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Empty State (Hidden by default) -->
+        <div id="empty-state" class="hidden py-12 flex flex-col items-center justify-center">
+            <span class="material-symbols-outlined text-outline-variant text-4xl mb-2">group_off</span>
+            <p class="text-on-surface-variant">No se encontraron miembros para este filtro.</p>
+        </div>
+
+        <!-- Pagination Footer -->
+        <div class="bg-surface-container border-t border-outline-variant p-4 flex items-center justify-between mt-auto">
+            <p id="pagination-info" class="text-sm text-on-surface-variant">Mostrando 0 miembros</p>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbz-5zbcyoNX5sSrVp39Ocj6NbTqIP7XSHLti5o2AfrOl5dcD_-6mf2ieLN2XkldklCNAQ/exec?action=todosLosMiembros';
+        let allMembers = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchMembers();
+
+            // Configurar botones de filtro
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => {
+                        b.className = "filter-btn px-4 py-1.5 rounded-full border border-outline-variant text-on-surface-variant font-label-caps text-label-caps hover:bg-surface-bright transition-colors";
+                    });
+                    
+                    btn.className = "filter-btn px-4 py-1.5 rounded-full border border-primary-fixed bg-primary-fixed/10 text-primary-fixed font-label-caps text-label-caps hover:bg-primary-fixed/20 transition-colors";
+
+                    const filter = btn.getAttribute('data-filter');
+                    renderTable(filter);
+                });
+            });
+
+            // Botón de refresco
+            document.getElementById('btn-refresh').addEventListener('click', fetchMembers);
+        });
+
+        async function fetchMembers() {
+            const loading = document.getElementById('loading-state');
+            loading.classList.remove('hidden');
+            
+            try {
+                // Fetch de la API (asume que doGet devolverá {exito: true, datos: [...]})
+                const response = await fetch(API_URL);
+                const result = await response.json();
+                
+                if (result.exito) {
+                    allMembers = result.datos;
+                    
+                    // Actualizar métricas
+                    const activos = allMembers.filter(m => m.estatus && m.estatus.includes('ACTIVO')).length;
+                    const enRiesgo = allMembers.filter(m => m.estatus && (m.estatus.includes('VENCIDO') || m.estatus.includes('POR VENCER'))).length;
+                    
+                    document.getElementById('stat-activos').textContent = activos;
+                    document.getElementById('stat-riesgo').textContent = enRiesgo;
+
+                    // Renderizar tabla con filtro activo actual
+                    const activeFilterBtn = document.querySelector('.filter-btn.bg-primary-fixed\\/10');
+                    const currentFilter = activeFilterBtn ? activeFilterBtn.getAttribute('data-filter') : 'todos';
+                    renderTable(currentFilter);
+                } else {
+                    console.error('Error del API:', result.mensaje);
+                    alert('Error al cargar datos desde Google Sheets: ' + result.mensaje);
+                }
+            } catch (error) {
+                console.error('Error de red:', error);
+                alert('No se pudo conectar con el servidor. Verifica que agregaste la función doGet() en tu Google Script y lo implementaste como Web App.');
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        function renderTable(filter) {
+            const tbody = document.getElementById('table-body');
+            const emptyState = document.getElementById('empty-state');
+            tbody.innerHTML = '';
+
+            let filteredMembers = allMembers;
+
+            if (filter === 'activo') {
+                filteredMembers = allMembers.filter(m => m.estatus && m.estatus.includes('ACTIVO'));
+            } else if (filter === 'inactivo') {
+                filteredMembers = allMembers.filter(m => m.estatus && m.estatus.includes('VENCIDO'));
+            } else if (filter === 'por-vencer') {
+                filteredMembers = allMembers.filter(m => m.estatus && m.estatus.includes('POR VENCER'));
+            }
+
+            document.getElementById('pagination-info').textContent = `Mostrando ${filteredMembers.length} miembros`;
+
+            if (filteredMembers.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                
+                filteredMembers.forEach(m => {
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-[#1F1F1F] hover:bg-[#1A1A1A] transition-colors group";
+                    
+                    // Estilos dinámicos según el estatus
+                    let statusBadge = '';
+                    let rowClassAddon = '';
+                    let daysClass = 'text-on-surface';
+
+                    if (m.estatus && m.estatus.includes('ACTIVO')) {
+                        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-fixed/10 text-primary-fixed font-label-caps text-label-caps border border-primary-fixed/30"><span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span> Activo</span>`;
+                    } else if (m.estatus && m.estatus.includes('VENCIDO')) {
+                        tr.classList.add('bg-error/5');
+                        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-error-container/20 text-error font-label-caps text-label-caps border border-error/30"><span class="w-1.5 h-1.5 rounded-full bg-error"></span> Vencido</span>`;
+                        daysClass = 'text-error';
+                    } else if (m.estatus && m.estatus.includes('POR VENCER')) {
+                        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container/20 text-secondary-container font-label-caps text-label-caps border border-secondary-container/30"><span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span> Próx. a vencer</span>`;
+                        daysClass = 'text-secondary-container';
+                    } else {
+                        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-highest text-on-surface-variant font-label-caps text-label-caps border border-outline-variant"><span class="w-1.5 h-1.5 rounded-full bg-on-surface-variant"></span> ${m.estatus || 'Desconocido'}</span>`;
+                        daysClass = 'text-on-surface-variant';
+                    }
+
+                    // Formatear fechas
+                    const fechaUltimoPago = m.ultimoPago ? new Date(m.ultimoPago).toLocaleDateString('es-MX', {day: 'numeric', month: 'short', year: 'numeric'}) : '-';
+
+                    tr.innerHTML = `
+                        <td class="py-4 px-6 text-on-surface-variant sticky left-0 bg-surface-dim group-hover:bg-[#1A1A1A] z-10 transition-colors">${m.id || '-'}</td>
+                        <td class="py-4 px-6 sticky left-12 bg-surface-dim group-hover:bg-[#1A1A1A] z-10 shadow-[4px_0_10px_-4px_rgba(0,0,0,0.5)] transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant flex items-center justify-center bg-surface-container-highest">
+                                    <span class="material-symbols-outlined text-on-surface-variant">person</span>
+                                </div>
+                                <div>
+                                    <p class="font-body-md font-medium text-on-surface">${m.nombre || 'Sin Nombre'}</p>
+                                    <p class="text-sm text-on-surface-variant">${m.correo || ''}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6">
+                            ${statusBadge}
+                        </td>
+                        <td class="py-4 px-6 text-on-surface">${m.planActual || 'Sin Plan'}<br/><span class="text-sm text-on-surface-variant">Último Pago: ${fechaUltimoPago}</span></td>
+                        <td class="py-4 px-6 text-on-surface-variant">${m.ultimoAcceso ? new Date(m.ultimoAcceso).toLocaleString('es-MX') : '-'}</td>
+                        <td class="py-4 px-6 text-right font-data-table ${daysClass}">
+                            ${m.diasRestantes !== undefined && m.diasRestantes !== '' ? m.diasRestantes + ' días' : '-'}
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+    </script>
+</DashboardLayout>

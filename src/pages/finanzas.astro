@@ -1,0 +1,227 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+---
+
+<DashboardLayout title="Finanzas">
+    <!-- Dashboard Controls Row -->
+    <div class="flex justify-between items-center bg-surface-container-low p-stack-sm rounded-lg border border-outline-variant mb-stack-lg">
+        <!-- Time Filters -->
+        <div class="flex gap-2">
+            <button class="px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors rounded-md">Day</button>
+            <button class="px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors rounded-md">Week</button>
+            <button class="px-4 py-2 font-label-caps text-label-caps bg-surface-container-high text-primary-fixed border border-primary-fixed/20 rounded-md shadow-[0_0_10px_rgba(0,255,65,0.1)]">Month</button>
+            <button class="px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors rounded-md">Year</button>
+        </div>
+        <!-- Export Actions -->
+        <div class="flex gap-stack-sm">
+            <button class="flex items-center gap-2 px-4 py-2 font-label-caps text-label-caps text-on-surface border border-outline-variant rounded-md hover:bg-surface-container transition-colors">
+                <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+                PDF Export
+            </button>
+            <button class="flex items-center gap-2 px-4 py-2 font-label-caps text-label-caps text-on-surface border border-outline-variant rounded-md hover:bg-surface-container transition-colors">
+                <span class="material-symbols-outlined text-[18px]">table_chart</span>
+                Excel Export
+            </button>
+        </div>
+    </div>
+    
+    <!-- Key Metrics Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-stack-lg">
+        <!-- Card 1: Revenue -->
+        <div class="bg-surface-container p-stack-lg rounded-xl border border-outline-variant flex flex-col gap-stack-sm relative overflow-hidden group hover:border-primary-fixed/30 transition-colors">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-primary-fixed/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-primary-fixed/10 transition-colors"></div>
+            <div class="flex justify-between items-start">
+                <span class="font-label-caps text-label-caps text-on-surface-variant">Total Revenue</span>
+                <span class="material-symbols-outlined text-primary-fixed">payments</span>
+            </div>
+            <div class="font-metric-xl text-metric-xl text-on-surface mt-2" id="metric-revenue">...</div>
+            <div class="flex items-center gap-1 mt-auto pt-4">
+                <span class="material-symbols-outlined text-primary-fixed text-[16px]">trending_up</span>
+                <span class="font-label-caps text-label-caps text-primary-fixed">+12.5%</span>
+                <span class="font-body-md text-body-md text-on-surface-variant text-sm ml-2">vs last month</span>
+            </div>
+        </div>
+        <!-- Card 2: Expenses -->
+        <div class="bg-surface-container p-stack-lg rounded-xl border border-outline-variant flex flex-col gap-stack-sm relative overflow-hidden group hover:border-error/30 transition-colors">
+            <div class="flex justify-between items-start">
+                <span class="font-label-caps text-label-caps text-on-surface-variant">Total Expenses</span>
+                <span class="material-symbols-outlined text-error">receipt_long</span>
+            </div>
+            <div class="font-metric-xl text-metric-xl text-on-surface mt-2">$14,200</div>
+            <div class="flex items-center gap-1 mt-auto pt-4">
+                <span class="material-symbols-outlined text-error text-[16px]">trending_up</span>
+                <span class="font-label-caps text-label-caps text-error">+4.2%</span>
+                <span class="font-body-md text-body-md text-on-surface-variant text-sm ml-2">vs last month</span>
+            </div>
+        </div>
+        <!-- Card 3: Net Profit -->
+        <div class="bg-surface-container p-stack-lg rounded-xl border border-outline-variant flex flex-col gap-stack-sm relative overflow-hidden group hover:border-primary-fixed/30 transition-colors">
+            <div class="flex justify-between items-start">
+                <span class="font-label-caps text-label-caps text-on-surface-variant">Net Profit</span>
+                <span class="material-symbols-outlined text-primary-fixed">account_balance</span>
+            </div>
+            <div class="font-metric-xl text-metric-xl text-primary-fixed mt-2">$28,650</div>
+            <div class="flex items-center gap-1 mt-auto pt-4">
+                <span class="material-symbols-outlined text-primary-fixed text-[16px]">trending_up</span>
+                <span class="font-label-caps text-label-caps text-primary-fixed">+18.4%</span>
+                <span class="font-body-md text-body-md text-on-surface-variant text-sm ml-2">vs last month</span>
+            </div>
+        </div>
+        <!-- Card 4: New Members -->
+        <div class="bg-surface-container p-stack-lg rounded-xl border border-outline-variant flex flex-col gap-stack-sm relative overflow-hidden group hover:border-secondary-fixed-dim/30 transition-colors">
+            <div class="flex justify-between items-start">
+                <span class="font-label-caps text-label-caps text-on-surface-variant">New Memberships</span>
+                <span class="material-symbols-outlined text-secondary-fixed-dim">group_add</span>
+            </div>
+            <div class="font-metric-xl text-metric-xl text-on-surface mt-2" id="metric-ventas">...</div>
+            <div class="flex items-center gap-1 mt-auto pt-4">
+                <span class="material-symbols-outlined text-secondary-fixed-dim text-[16px]">trending_flat</span>
+                <span class="font-label-caps text-label-caps text-secondary-fixed-dim">+0.0%</span>
+                <span class="font-body-md text-body-md text-on-surface-variant text-sm ml-2">vs last month</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts Area -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter mb-stack-lg">
+        <!-- Line Chart Container -->
+        <div class="bg-surface-container border border-outline-variant rounded-xl p-stack-lg flex flex-col h-[400px]">
+            <h3 class="font-headline-md text-headline-md text-on-surface mb-6">Revenue Overview</h3>
+            <div class="flex-1 relative border-b border-l border-outline-variant flex items-end pt-8">
+                <!-- Y Axis Labels -->
+                <div class="absolute left-[-40px] top-0 bottom-0 flex flex-col justify-between text-on-surface-variant font-label-caps text-[10px] py-4">
+                    <span>$50k</span>
+                    <span>$25k</span>
+                    <span>$0</span>
+                </div>
+                <!-- Faux Line Chart Visualization -->
+                <div class="w-full h-full flex items-end justify-between px-4 relative">
+                    <!-- Connecting Line (SVG) -->
+                    <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
+                        <path class="glow-effect" d="M0,80 L20,60 L40,75 L60,30 L80,45 L100,10" fill="none" stroke="#00ff41" stroke-width="2"></path>
+                        <path d="M0,80 L20,60 L40,75 L60,30 L80,45 L100,10 L100,100 L0,100 Z" fill="url(#areaGradient)" opacity="0.2"></path>
+                        <defs>
+                            <linearGradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
+                                <stop offset="0%" stop-color="#00ff41"></stop>
+                                <stop offset="100%" stop-color="transparent"></stop>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <!-- Data Points -->
+                    <div class="w-2 h-2 rounded-full bg-primary-fixed z-10 relative" style="margin-bottom: 20%;"></div>
+                    <div class="w-2 h-2 rounded-full bg-primary-fixed z-10 relative" style="margin-bottom: 40%;"></div>
+                    <div class="w-2 h-2 rounded-full bg-primary-fixed z-10 relative" style="margin-bottom: 25%;"></div>
+                    <div class="w-2 h-2 rounded-full bg-primary-fixed z-10 relative" style="margin-bottom: 70%;"></div>
+                    <div class="w-2 h-2 rounded-full bg-primary-fixed z-10 relative" style="margin-bottom: 55%;"></div>
+                    <div class="w-2 h-2 rounded-full bg-primary-fixed z-10 relative" style="margin-bottom: 90%;"></div>
+                </div>
+            </div>
+            <!-- X Axis Labels -->
+            <div class="flex justify-between mt-4 px-4 font-label-caps text-label-caps text-on-surface-variant text-[10px]">
+                <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+            </div>
+        </div>
+        <!-- Bar Chart Container -->
+        <div class="bg-surface-container border border-outline-variant rounded-xl p-stack-lg flex flex-col h-[400px]">
+            <h3 class="font-headline-md text-headline-md text-on-surface mb-6">Revenue by Category</h3>
+            <div class="flex-1 border-b border-l border-outline-variant flex items-end justify-around pb-0 pt-8 px-4">
+                <!-- Faux Bar Chart Visualization -->
+                <div class="w-16 bg-primary-fixed/20 hover:bg-primary-fixed/40 transition-colors border border-primary-fixed/50 rounded-t-sm flex flex-col justify-end group" style="height: 85%;">
+                    <div class="opacity-0 group-hover:opacity-100 text-center font-label-caps text-[10px] text-primary-fixed -translate-y-6 transition-all">$32k</div>
+                </div>
+                <div class="w-16 bg-secondary-container/20 hover:bg-secondary-container/40 transition-colors border border-secondary-container/50 rounded-t-sm flex flex-col justify-end group" style="height: 40%;">
+                    <div class="opacity-0 group-hover:opacity-100 text-center font-label-caps text-[10px] text-secondary-container -translate-y-6 transition-all">$15k</div>
+                </div>
+                <div class="w-16 bg-tertiary-fixed-dim/20 hover:bg-tertiary-fixed-dim/40 transition-colors border border-tertiary-fixed-dim/50 rounded-t-sm flex flex-col justify-end group" style="height: 25%;">
+                    <div class="opacity-0 group-hover:opacity-100 text-center font-label-caps text-[10px] text-tertiary-fixed-dim -translate-y-6 transition-all">$8k</div>
+                </div>
+            </div>
+            <!-- X Axis Labels -->
+            <div class="flex justify-around mt-4 font-label-caps text-label-caps text-on-surface-variant text-[10px]">
+                <span class="w-16 text-center">Memberships</span>
+                <span class="w-16 text-center">Personal Tr.</span>
+                <span class="w-16 text-center">Supplements</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Transaction Table Section -->
+    <div class="bg-surface-container border border-outline-variant rounded-xl overflow-hidden flex flex-col">
+        <div class="p-stack-lg border-b border-outline-variant flex justify-between items-center">
+            <h3 class="font-headline-md text-headline-md text-on-surface">Recent Transactions</h3>
+            <button class="font-label-caps text-label-caps text-primary-fixed hover:underline flex items-center gap-1">
+                View All <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </button>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-[800px]">
+                <thead>
+                    <tr class="bg-surface-container-high border-b border-outline-variant">
+                        <th class="p-4 font-label-caps text-label-caps text-on-surface-variant w-32">Date</th>
+                        <th class="p-4 font-label-caps text-label-caps text-on-surface-variant">Description</th>
+                        <th class="p-4 font-label-caps text-label-caps text-on-surface-variant w-40">Category</th>
+                        <th class="p-4 font-label-caps text-label-caps text-on-surface-variant w-32 text-right">Amount</th>
+                        <th class="p-4 font-label-caps text-label-caps text-on-surface-variant w-40">Method</th>
+                    </tr>
+                </thead>
+                <tbody class="font-data-table text-data-table text-on-surface">
+                    <tr class="border-b border-[#1F1F1F] hover:bg-[#1A1A1A] transition-colors">
+                        <td class="p-4 text-on-surface-variant">Oct 24, 2023</td>
+                        <td class="p-4 font-medium">Annual Pro Membership - John Doe</td>
+                        <td class="p-4"><span class="px-2 py-1 bg-primary-fixed/10 text-primary-fixed rounded text-xs border border-primary-fixed/20">Membership</span></td>
+                        <td class="p-4 text-right text-primary-fixed">+$1,200.00</td>
+                        <td class="p-4 text-on-surface-variant">Credit Card •••• 4242</td>
+                    </tr>
+                    <tr class="border-b border-[#1F1F1F] hover:bg-[#1A1A1A] transition-colors">
+                        <td class="p-4 text-on-surface-variant">Oct 24, 2023</td>
+                        <td class="p-4 font-medium">Equipment Maintenance - Rogue Fitness</td>
+                        <td class="p-4"><span class="px-2 py-1 bg-error/10 text-error rounded text-xs border border-error/20">Expense</span></td>
+                        <td class="p-4 text-right text-on-surface">-$450.00</td>
+                        <td class="p-4 text-on-surface-variant">Bank Transfer</td>
+                    </tr>
+                    <tr class="border-b border-[#1F1F1F] hover:bg-[#1A1A1A] transition-colors">
+                        <td class="p-4 text-on-surface-variant">Oct 23, 2023</td>
+                        <td class="p-4 font-medium">10x PT Sessions - Sarah Smith</td>
+                        <td class="p-4"><span class="px-2 py-1 bg-secondary-container/10 text-secondary-container rounded text-xs border border-secondary-container/20">Personal Tr.</span></td>
+                        <td class="p-4 text-right text-primary-fixed">+$800.00</td>
+                        <td class="p-4 text-on-surface-variant">Credit Card •••• 1123</td>
+                    </tr>
+                    <tr class="border-b border-[#1F1F1F] hover:bg-[#1A1A1A] transition-colors">
+                        <td class="p-4 text-on-surface-variant">Oct 23, 2023</td>
+                        <td class="p-4 font-medium">Protein Powder Stock (50 units)</td>
+                        <td class="p-4"><span class="px-2 py-1 bg-tertiary-fixed-dim/10 text-tertiary-fixed-dim rounded text-xs border border-tertiary-fixed-dim/20">Supplements</span></td>
+                        <td class="p-4 text-right text-on-surface">-$1,150.00</td>
+                        <td class="p-4 text-on-surface-variant">ACH Payment</td>
+                    </tr>
+                    <tr class="hover:bg-[#1A1A1A] transition-colors">
+                        <td class="p-4 text-on-surface-variant">Oct 22, 2023</td>
+                        <td class="p-4 font-medium">Monthly Standard Membership - Mike Ross</td>
+                        <td class="p-4"><span class="px-2 py-1 bg-primary-fixed/10 text-primary-fixed rounded text-xs border border-primary-fixed/20">Membership</span></td>
+                        <td class="p-4 text-right text-primary-fixed">+$80.00</td>
+                        <td class="p-4 text-on-surface-variant">Stripe Auto-pay</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const url = 'https://script.google.com/macros/s/AKfycbz-5zbcyoNX5sSrVp39Ocj6NbTqIP7XSHLti5o2AfrOl5dcD_-6mf2ieLN2XkldklCNAQ/exec?action=ingresosHoy';
+            const revenueEl = document.getElementById('metric-revenue');
+            const ventasEl = document.getElementById('metric-ventas');
+
+            try {
+                const response = await fetch(url);
+                const result = await response.json();
+                
+                if (result.exito) {
+                    if (revenueEl) revenueEl.textContent = `$${result.montoTotal.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+                    if (ventasEl) ventasEl.textContent = result.totalVentas.toString();
+                }
+            } catch (err) {
+                console.error("Error cargando finanzas", err);
+            }
+        });
+    </script>
+</DashboardLayout>
