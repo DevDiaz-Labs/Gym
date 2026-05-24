@@ -115,7 +115,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                         if (result.exito) {
                             const d = result.datos;
                             // Ahora validará correctamente contra lo que arroja tu Sheets
-                            const isPermitido = d.estatus === "ACTIVO" || d.estatus === "DENEGADO";;
+                            const isPermitido = d.estatus === "ACTIVO" || d.estatus === "PERMITIDO";
                             
                             // Top Banner Styling
                             latestScan.className = isPermitido 
@@ -166,7 +166,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                                         ${d.estatus}
                                     </div>
                                     <span class="text-xs text-on-surface-variant">Justo ahora</span>
-                                    ${!isPermitido ? '<a href="/renovacion" class="text-xs text-primary-fixed hover:underline flex items-center gap-1 mt-1">Gestionar <span class="material-symbols-outlined text-[12px]">arrow_forward</span></a>' : ''}
+                                    ${!isPermitido ? `<a href="/renovacion?id=${val}" class="text-xs text-primary-fixed hover:underline flex items-center gap-1 mt-1">Gestionar <span class="material-symbols-outlined text-[12px]">arrow_forward</span></a>` : ''}
                                 </div>
                             `;
                             feed.prepend(newEntry);
@@ -225,7 +225,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                                             ${estatusMostrar}
                                         </div>
                                         <span class="text-xs text-on-surface-variant">${horaMostrar}</span>
-                                        ${!isPermitido ? '<a href="/renovacion" class="text-xs text-primary-fixed hover:underline flex items-center gap-1 mt-1">Gestionar <span class="material-symbols-outlined text-[12px]">arrow_forward</span></a>' : ''}
+                                        ${!isPermitido ? `<a href="/renovacion?id=${d.idMiembro || d.id || ''}" class="text-xs text-primary-fixed hover:underline flex items-center gap-1 mt-1">Gestionar <span class="material-symbols-outlined text-[12px]">arrow_forward</span></a>` : ''}
                                     </div>
                                 `;
                                 feed.appendChild(newEntry);

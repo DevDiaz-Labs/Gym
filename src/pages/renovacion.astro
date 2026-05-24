@@ -6,24 +6,26 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
     <div class="flex gap-container-margin h-[calc(100vh-64px)] -m-6 p-container-margin overflow-hidden">
         <!-- Left Flow: Renewal Process -->
         <div class="flex-1 flex flex-col gap-stack-lg overflow-y-auto pr-2">
-            <!-- Access Denied Banner -->
-            <div class="bg-surface-container-high border border-error rounded-lg p-stack-lg flex items-start gap-gutter relative overflow-hidden neon-glow-error shadow-[0_0_15px_0_rgba(255,180,171,0.2)]">
-                <div class="absolute top-0 left-0 w-1 h-full bg-error"></div>
-                <div class="bg-error-container text-on-error p-3 rounded-full flex-shrink-0">
-                    <span class="material-symbols-outlined" style="font-size: 32px; font-variation-settings: 'FILL' 1;">block</span>
+            <!-- Access Denied / Member Banner -->
+            <div id="member-banner" class="bg-surface-container-high border border-error rounded-lg p-stack-lg flex items-start gap-gutter relative overflow-hidden neon-glow-error shadow-[0_0_15px_0_rgba(255,180,171,0.2)]">
+                <div id="banner-left-line" class="absolute top-0 left-0 w-1 h-full bg-error"></div>
+                <div id="banner-icon-bg" class="bg-error-container text-on-error p-3 rounded-full flex-shrink-0">
+                    <span id="banner-icon" class="material-symbols-outlined" style="font-size: 32px; font-variation-settings: 'FILL' 1;">block</span>
                 </div>
                 <div class="flex-1">
-                    <h2 class="font-headline-lg text-headline-lg text-error mb-1">ACCESO DENEGADO</h2>
-                    <p class="font-body-lg text-body-lg text-on-surface mb-4">Membresía Expirada</p>
+                    <h2 id="banner-title" class="font-headline-lg text-headline-lg text-error mb-1">ACCESO DENEGADO</h2>
+                    <p id="banner-subtitle" class="font-body-lg text-body-lg text-on-surface mb-4">Membresía Expirada</p>
                     <div class="flex items-center gap-stack-lg bg-surface-container p-stack-md rounded border border-outline-variant">
-                        <img alt="Marcus Rodriguez" class="w-16 h-16 rounded border border-surface-variant object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIBh-w6jQ7D20tgoGg4zdSVMrgCSKwUM8zaxfNyZLmTdCEOoeQFPahXSnxJBkdTM21AA-3DUVu8hj_CFH4TjqZRPXIGrwCqRWCx5MNbKIbeXF4IsArBBiPZE9QmoRFRYqHv40NP9y4UOatdz9BlWr6M-pSCm1oWpQTUSDmeIIzsecqQBRETQA0kXl09tPKGTZx9TQG-1aPlAeFGXmXXsPJyb3pNAEthyOYSzVEKrzM4tTMQb5hWGzf7soOKieGumTng2r0_dyXZOY"/>
+                        <div class="w-16 h-16 rounded border border-surface-variant bg-[#1A1A1A] flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-outline-variant text-3xl">person</span>
+                        </div>
                         <div>
-                            <p class="font-headline-md text-headline-md text-on-surface">Marcus Rodriguez</p>
-                            <p class="font-label-caps text-label-caps text-on-surface-variant">ID: KF-8842-99</p>
+                            <p id="member-name" class="font-headline-md text-headline-md text-on-surface">Cargando...</p>
+                            <p id="member-id-text" class="font-label-caps text-label-caps text-on-surface-variant">ID: ---</p>
                         </div>
                         <div class="ml-auto text-right">
-                            <p class="font-label-caps text-label-caps text-error">Último Pago</p>
-                            <p class="font-data-table text-data-table text-on-surface">15 Oct 2023</p>
+                            <p class="font-label-caps text-label-caps text-on-surface-variant mb-1">Último Pago</p>
+                            <p id="member-last-payment" class="font-data-table text-data-table text-on-surface">---</p>
                         </div>
                     </div>
                 </div>
@@ -45,14 +47,14 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
             <!-- Payment Method -->
             <div class="bg-surface-container-high rounded-lg p-stack-lg border border-outline-variant">
                 <h3 class="font-headline-md text-headline-md text-on-surface mb-stack-md">Método de Pago</h3>
-                <div class="flex gap-gutter mb-stack-lg">
-                    <button class="flex-1 py-3 px-4 border border-primary-fixed bg-surface-container text-primary-fixed rounded font-label-caps text-label-caps flex items-center justify-center gap-2">
+                <div class="flex gap-gutter mb-stack-lg" id="payment-methods">
+                    <button data-method="Tarjeta" class="payment-btn flex-1 py-3 px-4 border border-primary-fixed bg-surface-container text-primary-fixed rounded font-label-caps text-label-caps flex items-center justify-center gap-2">
                         <span class="material-symbols-outlined">credit_card</span> Tarjeta
                     </button>
-                    <button class="flex-1 py-3 px-4 border border-outline-variant bg-surface-container text-on-surface-variant rounded font-label-caps text-label-caps flex items-center justify-center gap-2 hover:bg-surface-container-highest">
+                    <button data-method="Efectivo" class="payment-btn flex-1 py-3 px-4 border border-outline-variant bg-surface-container text-on-surface-variant rounded font-label-caps text-label-caps flex items-center justify-center gap-2 hover:bg-surface-container-highest">
                         <span class="material-symbols-outlined">payments</span> Efectivo
                     </button>
-                    <button class="flex-1 py-3 px-4 border border-outline-variant bg-surface-container text-on-surface-variant rounded font-label-caps text-label-caps flex items-center justify-center gap-2 hover:bg-surface-container-highest">
+                    <button data-method="Transferencia" class="payment-btn flex-1 py-3 px-4 border border-outline-variant bg-surface-container text-on-surface-variant rounded font-label-caps text-label-caps flex items-center justify-center gap-2 hover:bg-surface-container-highest">
                         <span class="material-symbols-outlined">sync_alt</span> Transferencia
                     </button>
                 </div>
@@ -71,28 +73,17 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                 <h3 class="font-label-caps text-label-caps text-on-surface-variant mb-stack-sm flex items-center gap-2">
                     <span class="material-symbols-outlined text-sm">history</span> Historial Reciente
                 </h3>
-                <div class="flex flex-col gap-2">
-                    <div class="flex justify-between items-center py-2 border-b border-surface-variant">
-                        <span class="font-data-table text-data-table text-on-surface">Hoy, 06:15 AM</span>
-                        <span class="font-label-caps text-label-caps text-error bg-error-container/20 px-2 py-1 rounded">Denegado</span>
-                    </div>
-                    <div class="flex justify-between items-center py-2 border-b border-surface-variant">
-                        <span class="font-data-table text-data-table text-on-surface-variant">Ayer, 18:30 PM</span>
-                        <span class="font-label-caps text-label-caps text-primary-fixed bg-primary-container/10 px-2 py-1 rounded">Permitido</span>
-                    </div>
-                    <div class="flex justify-between items-center py-2">
-                        <span class="font-data-table text-data-table text-on-surface-variant">14 Nov, 06:00 AM</span>
-                        <span class="font-label-caps text-label-caps text-primary-fixed bg-primary-container/10 px-2 py-1 rounded">Permitido</span>
-                    </div>
+                <div id="member-history" class="flex flex-col gap-2">
+                    <p class="text-sm text-on-surface-variant">Cargando historial...</p>
                 </div>
             </div>
-            <div class="flex-1">
+            <!-- Ocultamos la sección de notas ya que no se utiliza actualmente -->
+            <div class="flex-1 hidden">
                 <h3 class="font-label-caps text-label-caps text-on-surface-variant mb-stack-sm flex items-center gap-2">
                     <span class="material-symbols-outlined text-sm">note</span> Notas del Miembro
                 </h3>
                 <div class="bg-surface-container-lowest p-stack-md rounded border border-surface-variant">
-                    <p class="font-body-md text-body-md text-on-surface-variant italic">"Mencionó que renovaría esta semana al entrar el lunes. Prefiere pagar con tarjeta."</p>
-                    <p class="font-label-caps text-label-caps text-on-surface-variant mt-2 text-right">- Recepción</p>
+                    <p class="font-body-md text-body-md text-on-surface-variant italic">"Sin notas."</p>
                 </div>
             </div>
         </aside>
@@ -106,12 +97,87 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
             const btnProcesar = document.getElementById('btn-procesar');
 
             let selectedPrice = 0;
+            let selectedPlanName = "";
+            let selectedPaymentMethod = "Tarjeta";
 
-            const updateProcesarButton = (price) => {
+            const updateProcesarButton = (price, planName) => {
                 selectedPrice = price;
+                selectedPlanName = planName;
                 btnProcesar.innerHTML = `<span class="material-symbols-outlined">check_circle</span> Procesar $${price}`;
             };
 
+            // Setup payment buttons
+            const paymentBtns = document.querySelectorAll('.payment-btn');
+            paymentBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    paymentBtns.forEach(b => {
+                        b.className = "payment-btn flex-1 py-3 px-4 border border-outline-variant bg-surface-container text-on-surface-variant rounded font-label-caps text-label-caps flex items-center justify-center gap-2 hover:bg-surface-container-highest";
+                    });
+                    const targetBtn = e.currentTarget;
+                    targetBtn.className = "payment-btn flex-1 py-3 px-4 border border-primary-fixed bg-surface-container text-primary-fixed rounded font-label-caps text-label-caps flex items-center justify-center gap-2";
+                    selectedPaymentMethod = targetBtn.getAttribute('data-method');
+                });
+            });
+
+            // 1. Obtener ID de la URL (ej: /renovacion?id=KF-1234)
+            const urlParams = new URLSearchParams(window.location.search);
+            const memberId = urlParams.get('id');
+
+            if (memberId) {
+                // Cargar datos del miembro
+                try {
+                    const memberUrl = `https://script.google.com/macros/s/AKfycbz-5zbcyoNX5sSrVp39Ocj6NbTqIP7XSHLti5o2AfrOl5dcD_-6mf2ieLN2XkldklCNAQ/exec?action=datosRenovacionMiembro&idMiembro=${memberId}`;
+                    const memberResponse = await fetch(memberUrl);
+                    const memberData = await memberResponse.json();
+
+                    if (memberData.exito && memberData.datos) {
+                        const m = memberData.datos.miembro;
+                        const hList = memberData.datos.historial;
+                        
+                        document.getElementById('member-name').textContent = m.nombre || 'Desconocido';
+                        document.getElementById('member-id-text').textContent = `ID: ${memberId}`;
+                        document.getElementById('member-last-payment').textContent = m.fechaUltimoPago || m.ultimoPago || 'No registrado';
+
+                        const isPermitido = m.estatus === "ACTIVO" || m.estatus === "PERMITIDO";
+                        if (isPermitido) {
+                            document.getElementById('banner-title').textContent = "ACCESO PERMITIDO";
+                            document.getElementById('banner-title').className = "font-headline-lg text-headline-lg text-primary-fixed mb-1";
+                            document.getElementById('banner-subtitle').textContent = "Membresía Vigente";
+                            document.getElementById('member-banner').className = "bg-surface-container-high border border-primary-fixed/50 rounded-lg p-stack-lg flex items-start gap-gutter relative overflow-hidden shadow-[0_0_15px_0_rgba(0,255,65,0.15)]";
+                            document.getElementById('banner-left-line').className = "absolute top-0 left-0 w-1 h-full bg-primary-fixed";
+                            document.getElementById('banner-icon-bg').className = "bg-primary-fixed/20 text-primary-fixed p-3 rounded-full flex-shrink-0";
+                            document.getElementById('banner-icon').textContent = "check_circle";
+                        }
+
+                        const historyContainer = document.getElementById('member-history');
+                        if (hList && Array.isArray(hList) && hList.length > 0) {
+                            historyContainer.innerHTML = hList.map(h => {
+                                const isPermitidoH = h.estatus === "PERMITIDO" || h.estatus === "ACTIVO";
+                                const statusClass = isPermitidoH ? "text-primary-fixed bg-primary-container/10" : "text-error bg-error-container/20";
+                                const statusText = isPermitidoH ? "Permitido" : "Denegado";
+                                return `
+                                    <div class="flex justify-between items-center py-2 border-b border-surface-variant last:border-0">
+                                        <span class="font-data-table text-data-table text-on-surface-variant">${h.fecha || ''}</span>
+                                        <span class="font-label-caps text-label-caps ${statusClass} px-2 py-1 rounded">${statusText}</span>
+                                    </div>
+                                `;
+                            }).join('');
+                        } else {
+                            historyContainer.innerHTML = '<p class="text-sm text-on-surface-variant py-2">Sin historial reciente.</p>';
+                        }
+                    } else {
+                        document.getElementById('member-name').textContent = 'Miembro no encontrado';
+                        document.getElementById('member-id-text').textContent = `ID: ${memberId}`;
+                    }
+                } catch (e) {
+                    console.error("Error cargando info del miembro:", e);
+                    document.getElementById('member-name').textContent = 'Error de conexión';
+                }
+            } else {
+                document.getElementById('member-name').textContent = 'No se especificó ID';
+            }
+
+            // 2. Cargar catálogo de membresías
             try {
                 const response = await fetch(url);
                 const result = await response.json();
@@ -120,7 +186,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                     grid.innerHTML = '';
                     result.datos.forEach((membresia, index) => {
                         const isRecommended = index === 0; // First item selected by default
-                        if(isRecommended) updateProcesarButton(membresia.precio);
+                        if(isRecommended) updateProcesarButton(membresia.precio, membresia.nombre);
 
                         const card = document.createElement('div');
                         card.className = isRecommended
@@ -163,7 +229,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
 
                             // Set active class
                             card.className = "plan-card bg-surface-container border border-primary-container/50 rounded-lg p-stack-lg relative cursor-pointer border-primary-container transition-colors shadow-[0_0_15px_rgba(0,255,65,0.1)]";
-                            updateProcesarButton(membresia.precio);
+                            updateProcesarButton(membresia.precio, membresia.nombre);
                         });
 
                         grid.appendChild(card);
@@ -175,6 +241,50 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
             } finally {
                 loading.classList.add('hidden');
             }
+
+            // 3. Procesar el Pago
+            btnProcesar.addEventListener('click', async () => {
+                if (!memberId) {
+                    alert('No hay un miembro seleccionado.');
+                    return;
+                }
+                
+                btnProcesar.disabled = true;
+                btnProcesar.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> Procesando...`;
+
+                try {
+                    const postUrl = 'https://script.google.com/macros/s/AKfycbz-5zbcyoNX5sSrVp39Ocj6NbTqIP7XSHLti5o2AfrOl5dcD_-6mf2ieLN2XkldklCNAQ/exec';
+                    const payload = {
+                        action: 'registrarRenovacion',
+                        idMiembro: memberId, // Es string o number pero tu script de appscript hace Number()
+                        planContratado: selectedPlanName,
+                        montoPagado: selectedPrice,
+                        metodoPago: selectedPaymentMethod
+                    };
+                    
+                    const response = await fetch(postUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    const result = await response.json();
+                    if (result.exito) {
+                        alert('¡Renovación exitosa!');
+                        window.location.reload();
+                    } else {
+                        alert('Error al procesar: ' + result.mensaje);
+                    }
+                } catch (error) {
+                    alert('Error de conexión.');
+                    console.error(error);
+                } finally {
+                    btnProcesar.disabled = false;
+                    updateProcesarButton(selectedPrice, selectedPlanName);
+                }
+            });
         });
     </script>
 </DashboardLayout>
