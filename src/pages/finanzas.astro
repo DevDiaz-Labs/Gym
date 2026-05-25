@@ -47,7 +47,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                 <span class="font-label-caps text-label-caps text-on-surface-variant">Total Expenses</span>
                 <span class="material-symbols-outlined text-error">receipt_long</span>
             </div>
-            <div class="font-metric-xl text-metric-xl text-on-surface mt-2">$14,200</div>
+            <div class="font-metric-xl text-metric-xl text-on-surface mt-2" id="metric-expenses">...</div>
             <div class="flex items-center gap-1 mt-auto pt-4">
                 <span class="material-symbols-outlined text-error text-[16px]">trending_up</span>
                 <span class="font-label-caps text-label-caps text-error">+4.2%</span>
@@ -60,7 +60,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                 <span class="font-label-caps text-label-caps text-on-surface-variant">Net Profit</span>
                 <span class="material-symbols-outlined text-primary-fixed">account_balance</span>
             </div>
-            <div class="font-metric-xl text-metric-xl text-primary-fixed mt-2">$28,650</div>
+            <div class="font-metric-xl text-metric-xl text-primary-fixed mt-2" id="metric-profit">...</div>
             <div class="flex items-center gap-1 mt-auto pt-4">
                 <span class="material-symbols-outlined text-primary-fixed text-[16px]">trending_up</span>
                 <span class="font-label-caps text-label-caps text-primary-fixed">+18.4%</span>
@@ -87,60 +87,15 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
         <!-- Line Chart Container -->
         <div class="bg-surface-container border border-outline-variant rounded-xl p-stack-lg flex flex-col h-[400px]">
             <h3 class="font-headline-md text-headline-md text-on-surface mb-6">Revenue Overview</h3>
-            <div class="flex-1 relative border-b border-l border-outline-variant flex items-end pt-8">
-                <!-- Y Axis Labels -->
-                <div class="absolute left-[-40px] top-0 bottom-0 flex flex-col justify-between text-on-surface-variant font-label-caps text-[10px] py-4">
-                    <span>$50k</span>
-                    <span>$25k</span>
-                    <span>$0</span>
-                </div>
-                <!-- Faux Line Chart Visualization -->
-                <div class="w-full h-full flex items-end justify-between px-4 relative">
-                    <!-- Connecting Line (SVG) -->
-                    <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
-                        <path class="glow-effect" d="M0,80 L20,60 L40,75 L60,30 L80,45 L100,10" fill="none" stroke="#00ff41" stroke-width="2"></path>
-                        <path d="M0,80 L20,60 L40,75 L60,30 L80,45 L100,10 L100,100 L0,100 Z" fill="url(#areaGradient)" opacity="0.2"></path>
-                        <defs>
-                            <linearGradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
-                                <stop offset="0%" stop-color="#00ff41"></stop>
-                                <stop offset="100%" stop-color="transparent"></stop>
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                    <!-- Data Points -->
-                    <div class="w-2 h-2 rounded-full bg-primary-fixed z-10 relative" style="margin-bottom: 20%;"></div>
-                    <div class="w-2 h-2 rounded-full bg-primary-fixed z-10 relative" style="margin-bottom: 40%;"></div>
-                    <div class="w-2 h-2 rounded-full bg-primary-fixed z-10 relative" style="margin-bottom: 25%;"></div>
-                    <div class="w-2 h-2 rounded-full bg-primary-fixed z-10 relative" style="margin-bottom: 70%;"></div>
-                    <div class="w-2 h-2 rounded-full bg-primary-fixed z-10 relative" style="margin-bottom: 55%;"></div>
-                    <div class="w-2 h-2 rounded-full bg-primary-fixed z-10 relative" style="margin-bottom: 90%;"></div>
-                </div>
-            </div>
-            <!-- X Axis Labels -->
-            <div class="flex justify-between mt-4 px-4 font-label-caps text-label-caps text-on-surface-variant text-[10px]">
-                <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+            <div class="flex-1 w-full relative">
+                <canvas id="revenueChart"></canvas>
             </div>
         </div>
         <!-- Bar Chart Container -->
         <div class="bg-surface-container border border-outline-variant rounded-xl p-stack-lg flex flex-col h-[400px]">
             <h3 class="font-headline-md text-headline-md text-on-surface mb-6">Revenue by Category</h3>
-            <div class="flex-1 border-b border-l border-outline-variant flex items-end justify-around pb-0 pt-8 px-4">
-                <!-- Faux Bar Chart Visualization -->
-                <div class="w-16 bg-primary-fixed/20 hover:bg-primary-fixed/40 transition-colors border border-primary-fixed/50 rounded-t-sm flex flex-col justify-end group" style="height: 85%;">
-                    <div class="opacity-0 group-hover:opacity-100 text-center font-label-caps text-[10px] text-primary-fixed -translate-y-6 transition-all">$32k</div>
-                </div>
-                <div class="w-16 bg-secondary-container/20 hover:bg-secondary-container/40 transition-colors border border-secondary-container/50 rounded-t-sm flex flex-col justify-end group" style="height: 40%;">
-                    <div class="opacity-0 group-hover:opacity-100 text-center font-label-caps text-[10px] text-secondary-container -translate-y-6 transition-all">$15k</div>
-                </div>
-                <div class="w-16 bg-tertiary-fixed-dim/20 hover:bg-tertiary-fixed-dim/40 transition-colors border border-tertiary-fixed-dim/50 rounded-t-sm flex flex-col justify-end group" style="height: 25%;">
-                    <div class="opacity-0 group-hover:opacity-100 text-center font-label-caps text-[10px] text-tertiary-fixed-dim -translate-y-6 transition-all">$8k</div>
-                </div>
-            </div>
-            <!-- X Axis Labels -->
-            <div class="flex justify-around mt-4 font-label-caps text-label-caps text-on-surface-variant text-[10px]">
-                <span class="w-16 text-center">Memberships</span>
-                <span class="w-16 text-center">Personal Tr.</span>
-                <span class="w-16 text-center">Supplements</span>
+            <div class="flex-1 w-full relative">
+                <canvas id="categoryChart"></canvas>
             </div>
         </div>
     </div>
@@ -164,41 +119,12 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                         <th class="p-4 font-label-caps text-label-caps text-on-surface-variant w-40">Method</th>
                     </tr>
                 </thead>
-                <tbody class="font-data-table text-data-table text-on-surface">
-                    <tr class="border-b border-[#1F1F1F] hover:bg-[#1A1A1A] transition-colors">
-                        <td class="p-4 text-on-surface-variant">Oct 24, 2023</td>
-                        <td class="p-4 font-medium">Annual Pro Membership - John Doe</td>
-                        <td class="p-4"><span class="px-2 py-1 bg-primary-fixed/10 text-primary-fixed rounded text-xs border border-primary-fixed/20">Membership</span></td>
-                        <td class="p-4 text-right text-primary-fixed">+$1,200.00</td>
-                        <td class="p-4 text-on-surface-variant">Credit Card •••• 4242</td>
-                    </tr>
-                    <tr class="border-b border-[#1F1F1F] hover:bg-[#1A1A1A] transition-colors">
-                        <td class="p-4 text-on-surface-variant">Oct 24, 2023</td>
-                        <td class="p-4 font-medium">Equipment Maintenance - Rogue Fitness</td>
-                        <td class="p-4"><span class="px-2 py-1 bg-error/10 text-error rounded text-xs border border-error/20">Expense</span></td>
-                        <td class="p-4 text-right text-on-surface">-$450.00</td>
-                        <td class="p-4 text-on-surface-variant">Bank Transfer</td>
-                    </tr>
-                    <tr class="border-b border-[#1F1F1F] hover:bg-[#1A1A1A] transition-colors">
-                        <td class="p-4 text-on-surface-variant">Oct 23, 2023</td>
-                        <td class="p-4 font-medium">10x PT Sessions - Sarah Smith</td>
-                        <td class="p-4"><span class="px-2 py-1 bg-secondary-container/10 text-secondary-container rounded text-xs border border-secondary-container/20">Personal Tr.</span></td>
-                        <td class="p-4 text-right text-primary-fixed">+$800.00</td>
-                        <td class="p-4 text-on-surface-variant">Credit Card •••• 1123</td>
-                    </tr>
-                    <tr class="border-b border-[#1F1F1F] hover:bg-[#1A1A1A] transition-colors">
-                        <td class="p-4 text-on-surface-variant">Oct 23, 2023</td>
-                        <td class="p-4 font-medium">Protein Powder Stock (50 units)</td>
-                        <td class="p-4"><span class="px-2 py-1 bg-tertiary-fixed-dim/10 text-tertiary-fixed-dim rounded text-xs border border-tertiary-fixed-dim/20">Supplements</span></td>
-                        <td class="p-4 text-right text-on-surface">-$1,150.00</td>
-                        <td class="p-4 text-on-surface-variant">ACH Payment</td>
-                    </tr>
-                    <tr class="hover:bg-[#1A1A1A] transition-colors">
-                        <td class="p-4 text-on-surface-variant">Oct 22, 2023</td>
-                        <td class="p-4 font-medium">Monthly Standard Membership - Mike Ross</td>
-                        <td class="p-4"><span class="px-2 py-1 bg-primary-fixed/10 text-primary-fixed rounded text-xs border border-primary-fixed/20">Membership</span></td>
-                        <td class="p-4 text-right text-primary-fixed">+$80.00</td>
-                        <td class="p-4 text-on-surface-variant">Stripe Auto-pay</td>
+                <tbody id="transactions-tbody" class="font-data-table text-data-table text-on-surface">
+                    <tr>
+                        <td colspan="5" class="p-8 text-center text-on-surface-variant">
+                            <span class="material-symbols-outlined animate-spin text-primary-fixed text-4xl mb-2">progress_activity</span>
+                            <p>Cargando transacciones...</p>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -206,21 +132,145 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
     </div>
     
     <script>
+        import Chart from 'chart.js/auto';
+
         document.addEventListener('DOMContentLoaded', async () => {
-            const url = 'https://script.google.com/macros/s/AKfycbz-5zbcyoNX5sSrVp39Ocj6NbTqIP7XSHLti5o2AfrOl5dcD_-6mf2ieLN2XkldklCNAQ/exec?action=ingresosHoy';
+            const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbz-5zbcyoNX5sSrVp39Ocj6NbTqIP7XSHLti5o2AfrOl5dcD_-6mf2ieLN2XkldklCNAQ/exec';
+            
             const revenueEl = document.getElementById('metric-revenue');
+            const expensesEl = document.getElementById('metric-expenses');
+            const profitEl = document.getElementById('metric-profit');
             const ventasEl = document.getElementById('metric-ventas');
+            const tbody = document.getElementById('transactions-tbody');
+
+            // Set default Chart.js colors to match theme
+            Chart.defaults.color = '#B3B3B3'; // text-on-surface-variant
+            Chart.defaults.borderColor = '#333333'; // outline-variant
 
             try {
-                const response = await fetch(url);
-                const result = await response.json();
+                // 1. Cargar Métricas
+                const resMetricas = await fetch(`${API_BASE_URL}?action=metricasFinancieras`);
+                const dataMetricas = await resMetricas.json();
                 
-                if (result.exito) {
-                    if (revenueEl) revenueEl.textContent = `$${result.montoTotal.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-                    if (ventasEl) ventasEl.textContent = result.totalVentas.toString();
+                if (dataMetricas.exito) {
+                    const metricas = dataMetricas.datos;
+                    if (revenueEl) revenueEl.textContent = `$${metricas.ingresos.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+                    if (expensesEl) expensesEl.textContent = `$${metricas.gastos.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+                    if (profitEl) profitEl.textContent = `$${metricas.gananciaNeta.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+                    if (ventasEl) ventasEl.textContent = metricas.totalTransacciones.toString();
                 }
+
+                // 2. Cargar Transacciones
+                const resTransacciones = await fetch(`${API_BASE_URL}?action=ultimasTransacciones`);
+                const dataTransacciones = await resTransacciones.json();
+
+                if (dataTransacciones.exito) {
+                    const transacciones = dataTransacciones.datos;
+                    tbody.innerHTML = ''; // Limpiar loader
+                    
+                    if (transacciones.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-on-surface-variant">No hay transacciones recientes</td></tr>';
+                    } else {
+                        // Variables para gráficas
+                        const ingresosPorFecha = {};
+                        const ingresosPorCategoria = {};
+
+                        transacciones.forEach(t => {
+                            const esIngreso = t.tipo === 'Ingreso';
+                            const tr = document.createElement('tr');
+                            tr.className = "border-b border-[#1F1F1F] hover:bg-[#1A1A1A] transition-colors";
+                            
+                            // Agrupar datos para gráficas
+                            if (esIngreso) {
+                                // Si la fecha tiene 'T' (formato ISO), cortamos ahí. Si tiene espacio, en el espacio.
+                                const soloFecha = t.fecha.includes('T') ? t.fecha.split('T')[0] : t.fecha.split(' ')[0];
+                                ingresosPorFecha[soloFecha] = (ingresosPorFecha[soloFecha] || 0) + t.monto;
+                                ingresosPorCategoria[t.categoria] = (ingresosPorCategoria[t.categoria] || 0) + t.monto;
+                            }
+
+                            // Color y badge para tabla
+                            const montoClase = esIngreso ? 'text-primary-fixed' : 'text-error';
+                            const signo = esIngreso ? '+' : '-';
+                            const badgeClase = esIngreso 
+                                ? 'bg-primary-fixed/10 text-primary-fixed border-primary-fixed/20' 
+                                : 'bg-error/10 text-error border-error/20';
+
+                            tr.innerHTML = `
+                                <td class="p-4 text-on-surface-variant">${t.fecha}</td>
+                                <td class="p-4 font-medium">${t.descripcion}</td>
+                                <td class="p-4"><span class="px-2 py-1 rounded text-xs border ${badgeClase}">${t.categoria}</span></td>
+                                <td class="p-4 text-right font-bold ${montoClase}">${signo}$${Math.abs(t.monto).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                                <td class="p-4 text-on-surface-variant">${t.metodo}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+
+                        // 3. Renderizar Gráficas con Chart.js
+                        // Line Chart (Ingresos por fecha)
+                        const ctxLine = document.getElementById('revenueChart') as HTMLCanvasElement;
+                        if (ctxLine) {
+                            new Chart(ctxLine, {
+                                type: 'line',
+                                data: {
+                                    labels: Object.keys(ingresosPorFecha).reverse(), // Fechas
+                                    datasets: [{
+                                        label: 'Ingresos Diarios',
+                                        data: Object.values(ingresosPorFecha).reverse(),
+                                        borderColor: '#00ff41',
+                                        backgroundColor: 'rgba(0, 255, 65, 0.1)',
+                                        borderWidth: 3,
+                                        pointBackgroundColor: '#00ff41',
+                                        fill: true,
+                                        tension: 0.4
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: { legend: { display: false } },
+                                    scales: {
+                                        y: { beginAtZero: true, grid: { color: '#333' } },
+                                        x: { grid: { display: false } }
+                                    }
+                                }
+                            });
+                        }
+
+                        // Bar Chart (Ingresos por categoría)
+                        const ctxBar = document.getElementById('categoryChart') as HTMLCanvasElement;
+                        if (ctxBar) {
+                            const categorias = Object.keys(ingresosPorCategoria);
+                            const montosCat = Object.values(ingresosPorCategoria);
+                            new Chart(ctxBar, {
+                                type: 'bar',
+                                data: {
+                                    labels: categorias,
+                                    datasets: [{
+                                        label: 'Ingresos',
+                                        data: montosCat,
+                                        backgroundColor: ['rgba(0, 255, 65, 0.3)', 'rgba(56, 189, 248, 0.3)', 'rgba(167, 139, 250, 0.3)'],
+                                        borderColor: ['#00ff41', '#38bdf8', '#a78bfa'],
+                                        borderWidth: 1,
+                                        borderRadius: 4
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: { legend: { display: false } },
+                                    scales: {
+                                        y: { beginAtZero: true, grid: { color: '#333' } },
+                                        x: { grid: { display: false } }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+
             } catch (err) {
                 console.error("Error cargando finanzas", err);
+                if(tbody) tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-error">Error cargando datos</td></tr>';
             }
         });
     </script>
