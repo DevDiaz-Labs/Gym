@@ -6,21 +6,21 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
     <!-- Dashboard Controls Row -->
     <div class="flex justify-between items-center bg-surface-container-low p-stack-sm rounded-lg border border-outline-variant mb-stack-lg">
         <!-- Time Filters -->
-        <div class="flex gap-2">
-            <button class="px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors rounded-md">Day</button>
-            <button class="px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors rounded-md">Week</button>
-            <button class="px-4 py-2 font-label-caps text-label-caps bg-surface-container-high text-primary-fixed border border-primary-fixed/20 rounded-md shadow-[0_0_10px_rgba(0,255,65,0.1)]">Month</button>
-            <button class="px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors rounded-md">Year</button>
+        <div class="flex gap-2" id="time-filters">
+            <button data-filter="day" class="filter-btn px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors rounded-md">Hoy</button>
+            <button data-filter="week" class="filter-btn px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors rounded-md">Semana</button>
+            <button data-filter="month" class="filter-btn px-4 py-2 font-label-caps text-label-caps bg-surface-container-high text-primary-fixed border border-primary-fixed/20 rounded-md shadow-[0_0_10px_rgba(0,255,65,0.1)]">Mes</button>
+            <button data-filter="year" class="filter-btn px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors rounded-md">Año</button>
         </div>
         <!-- Export Actions -->
         <div class="flex gap-stack-sm">
             <button class="flex items-center gap-2 px-4 py-2 font-label-caps text-label-caps text-on-surface border border-outline-variant rounded-md hover:bg-surface-container transition-colors">
                 <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
-                PDF Export
+                Exportar PDF
             </button>
             <button class="flex items-center gap-2 px-4 py-2 font-label-caps text-label-caps text-on-surface border border-outline-variant rounded-md hover:bg-surface-container transition-colors">
                 <span class="material-symbols-outlined text-[18px]">table_chart</span>
-                Excel Export
+                Exportar Excel
             </button>
         </div>
     </div>
@@ -31,53 +31,53 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
         <div class="bg-surface-container p-stack-lg rounded-xl border border-outline-variant flex flex-col gap-stack-sm relative overflow-hidden group hover:border-primary-fixed/30 transition-colors">
             <div class="absolute top-0 right-0 w-32 h-32 bg-primary-fixed/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-primary-fixed/10 transition-colors"></div>
             <div class="flex justify-between items-start">
-                <span class="font-label-caps text-label-caps text-on-surface-variant">Total Revenue</span>
+                <span class="font-label-caps text-label-caps text-on-surface-variant">Ingresos Totales</span>
                 <span class="material-symbols-outlined text-primary-fixed">payments</span>
             </div>
             <div class="font-metric-xl text-metric-xl text-on-surface mt-2" id="metric-revenue">...</div>
             <div class="flex items-center gap-1 mt-auto pt-4">
                 <span class="material-symbols-outlined text-primary-fixed text-[16px]">trending_up</span>
                 <span class="font-label-caps text-label-caps text-primary-fixed">+12.5%</span>
-                <span class="font-body-md text-body-md text-on-surface-variant text-sm ml-2">vs last month</span>
+                <span class="font-body-md text-body-md text-on-surface-variant text-sm ml-2">vs mes anterior</span>
             </div>
         </div>
         <!-- Card 2: Expenses -->
         <div class="bg-surface-container p-stack-lg rounded-xl border border-outline-variant flex flex-col gap-stack-sm relative overflow-hidden group hover:border-error/30 transition-colors">
             <div class="flex justify-between items-start">
-                <span class="font-label-caps text-label-caps text-on-surface-variant">Total Expenses</span>
+                <span class="font-label-caps text-label-caps text-on-surface-variant">Gastos Totales</span>
                 <span class="material-symbols-outlined text-error">receipt_long</span>
             </div>
             <div class="font-metric-xl text-metric-xl text-on-surface mt-2" id="metric-expenses">...</div>
             <div class="flex items-center gap-1 mt-auto pt-4">
                 <span class="material-symbols-outlined text-error text-[16px]">trending_up</span>
                 <span class="font-label-caps text-label-caps text-error">+4.2%</span>
-                <span class="font-body-md text-body-md text-on-surface-variant text-sm ml-2">vs last month</span>
+                <span class="font-body-md text-body-md text-on-surface-variant text-sm ml-2">vs mes anterior</span>
             </div>
         </div>
         <!-- Card 3: Net Profit -->
         <div class="bg-surface-container p-stack-lg rounded-xl border border-outline-variant flex flex-col gap-stack-sm relative overflow-hidden group hover:border-primary-fixed/30 transition-colors">
             <div class="flex justify-between items-start">
-                <span class="font-label-caps text-label-caps text-on-surface-variant">Net Profit</span>
+                <span class="font-label-caps text-label-caps text-on-surface-variant">Ganancia Neta</span>
                 <span class="material-symbols-outlined text-primary-fixed">account_balance</span>
             </div>
             <div class="font-metric-xl text-metric-xl text-primary-fixed mt-2" id="metric-profit">...</div>
             <div class="flex items-center gap-1 mt-auto pt-4">
                 <span class="material-symbols-outlined text-primary-fixed text-[16px]">trending_up</span>
                 <span class="font-label-caps text-label-caps text-primary-fixed">+18.4%</span>
-                <span class="font-body-md text-body-md text-on-surface-variant text-sm ml-2">vs last month</span>
+                <span class="font-body-md text-body-md text-on-surface-variant text-sm ml-2">vs mes anterior</span>
             </div>
         </div>
         <!-- Card 4: New Members -->
         <div class="bg-surface-container p-stack-lg rounded-xl border border-outline-variant flex flex-col gap-stack-sm relative overflow-hidden group hover:border-secondary-fixed-dim/30 transition-colors">
             <div class="flex justify-between items-start">
-                <span class="font-label-caps text-label-caps text-on-surface-variant">New Memberships</span>
+                <span class="font-label-caps text-label-caps text-on-surface-variant">Transacciones</span>
                 <span class="material-symbols-outlined text-secondary-fixed-dim">group_add</span>
             </div>
             <div class="font-metric-xl text-metric-xl text-on-surface mt-2" id="metric-ventas">...</div>
             <div class="flex items-center gap-1 mt-auto pt-4">
                 <span class="material-symbols-outlined text-secondary-fixed-dim text-[16px]">trending_flat</span>
                 <span class="font-label-caps text-label-caps text-secondary-fixed-dim">+0.0%</span>
-                <span class="font-body-md text-body-md text-on-surface-variant text-sm ml-2">vs last month</span>
+                <span class="font-body-md text-body-md text-on-surface-variant text-sm ml-2">vs mes anterior</span>
             </div>
         </div>
     </div>
@@ -86,14 +86,14 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter mb-stack-lg">
         <!-- Line Chart Container -->
         <div class="bg-surface-container border border-outline-variant rounded-xl p-stack-lg flex flex-col h-[400px]">
-            <h3 class="font-headline-md text-headline-md text-on-surface mb-6">Revenue Overview</h3>
+            <h3 class="font-headline-md text-headline-md text-on-surface mb-6">Resumen de Ingresos</h3>
             <div class="flex-1 w-full relative">
                 <canvas id="revenueChart"></canvas>
             </div>
         </div>
         <!-- Bar Chart Container -->
         <div class="bg-surface-container border border-outline-variant rounded-xl p-stack-lg flex flex-col h-[400px]">
-            <h3 class="font-headline-md text-headline-md text-on-surface mb-6">Revenue by Category</h3>
+            <h3 class="font-headline-md text-headline-md text-on-surface mb-6">Ingresos por Categoría</h3>
             <div class="flex-1 w-full relative">
                 <canvas id="categoryChart"></canvas>
             </div>
@@ -103,20 +103,20 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
     <!-- Transaction Table Section -->
     <div class="bg-surface-container border border-outline-variant rounded-xl overflow-hidden flex flex-col">
         <div class="p-stack-lg border-b border-outline-variant flex justify-between items-center">
-            <h3 class="font-headline-md text-headline-md text-on-surface">Recent Transactions</h3>
+            <h3 class="font-headline-md text-headline-md text-on-surface">Transacciones Recientes</h3>
             <button class="font-label-caps text-label-caps text-primary-fixed hover:underline flex items-center gap-1">
-                View All <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                Ver Todo <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
             </button>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse min-w-[800px]">
                 <thead>
                     <tr class="bg-surface-container-high border-b border-outline-variant">
-                        <th class="p-4 font-label-caps text-label-caps text-on-surface-variant w-32">Date</th>
-                        <th class="p-4 font-label-caps text-label-caps text-on-surface-variant">Description</th>
-                        <th class="p-4 font-label-caps text-label-caps text-on-surface-variant w-40">Category</th>
-                        <th class="p-4 font-label-caps text-label-caps text-on-surface-variant w-32 text-right">Amount</th>
-                        <th class="p-4 font-label-caps text-label-caps text-on-surface-variant w-40">Method</th>
+                        <th class="p-4 font-label-caps text-label-caps text-on-surface-variant w-32">Fecha</th>
+                        <th class="p-4 font-label-caps text-label-caps text-on-surface-variant">Descripción</th>
+                        <th class="p-4 font-label-caps text-label-caps text-on-surface-variant w-40">Categoría</th>
+                        <th class="p-4 font-label-caps text-label-caps text-on-surface-variant w-32 text-right">Monto</th>
+                        <th class="p-4 font-label-caps text-label-caps text-on-surface-variant w-40">Método</th>
                     </tr>
                 </thead>
                 <tbody id="transactions-tbody" class="font-data-table text-data-table text-on-surface">
@@ -143,134 +143,257 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
             const ventasEl = document.getElementById('metric-ventas');
             const tbody = document.getElementById('transactions-tbody');
 
+            // Instancias de Chart.js para destruirlas al actualizar
+            let revenueChartInstance = null;
+            let categoryChartInstance = null;
+            let allTransactions = [];
+            let currentFilter = 'month'; // Filtro por defecto
+
             // Set default Chart.js colors to match theme
             Chart.defaults.color = '#B3B3B3'; // text-on-surface-variant
             Chart.defaults.borderColor = '#333333'; // outline-variant
 
-            try {
-                // 1. Cargar Métricas
-                const resMetricas = await fetch(`${API_BASE_URL}?action=metricasFinancieras`);
-                const dataMetricas = await resMetricas.json();
+            // Función para parsear fecha "dd/MM/yyyy HH:mm", "yyyy-MM-dd" o estándar a Date de JS
+            function parseFecha(fechaStr) {
+                if (!fechaStr) return new Date();
                 
-                if (dataMetricas.exito) {
-                    const metricas = dataMetricas.datos;
-                    if (revenueEl) revenueEl.textContent = `$${metricas.ingresos.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-                    if (expensesEl) expensesEl.textContent = `$${metricas.gastos.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-                    if (profitEl) profitEl.textContent = `$${metricas.gananciaNeta.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-                    if (ventasEl) ventasEl.textContent = metricas.totalTransacciones.toString();
+                // Si la fecha viene con guiones (ej. YYYY-MM-DD o ISO)
+                if (fechaStr.includes('-')) {
+                    const partes = fechaStr.split('T')[0].split(' ')[0].split('-');
+                    if (partes.length >= 3) {
+                        const anio = parseInt(partes[0], 10);
+                        const mes = parseInt(partes[1], 10) - 1;
+                        const dia = parseInt(partes[2], 10);
+                        return new Date(anio, mes, dia);
+                    }
+                    return new Date(fechaStr);
                 }
 
-                // 2. Cargar Transacciones
+                // Si viene en formato dd/MM/yyyy
+                if (fechaStr.includes('/')) {
+                    const partes = fechaStr.split(' ');
+                    const fechaPartes = partes[0].split('/');
+                    const dia = parseInt(fechaPartes[0], 10);
+                    const mes = parseInt(fechaPartes[1], 10) - 1; // Meses son 0-11
+                    const anio = parseInt(fechaPartes[2], 10);
+                    
+                    let hora = 0;
+                    let minuto = 0;
+                    if (partes[1]) {
+                        const horaPartes = partes[1].split(':');
+                        hora = parseInt(horaPartes[0], 10);
+                        minuto = parseInt(horaPartes[1], 10);
+                    }
+                    return new Date(anio, mes, dia, hora, minuto);
+                }
+                
+                return new Date(fechaStr);
+            }
+
+            // Función para aplicar filtros de tiempo y actualizar dashboard
+            function filtrarYActualizar(filtro) {
+                currentFilter = filtro;
+                
+                // Actualizar clases de los botones de filtro
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    if (btn.getAttribute('data-filter') === filtro) {
+                        btn.className = "filter-btn px-4 py-2 font-label-caps text-label-caps bg-surface-container-high text-primary-fixed border border-primary-fixed/20 rounded-md shadow-[0_0_10px_rgba(0,255,65,0.1)]";
+                    } else {
+                        btn.className = "filter-btn px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors rounded-md";
+                    }
+                });
+
+                const ahora = new Date();
+                const hoyInicio = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+                
+                // Filtrar las transacciones
+                const filtradas = allTransactions.filter(t => {
+                    const fechaT = parseFecha(t.fecha);
+                    if (filtro === 'day') {
+                        return fechaT >= hoyInicio;
+                    } else if (filtro === 'week') {
+                        const haceSieteDias = new Date(hoyInicio.getTime() - 7 * 24 * 60 * 60 * 1000);
+                        return fechaT >= haceSieteDias;
+                    } else if (filtro === 'month') {
+                        const inicioMes = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
+                        return fechaT >= inicioMes;
+                    } else if (filtro === 'year') {
+                        const inicioAnio = new Date(ahora.getFullYear(), 0, 1);
+                        return fechaT >= inicioAnio;
+                    }
+                    return true;
+                });
+
+                // Renderizar tabla
+                tbody.innerHTML = '';
+                if (filtradas.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-on-surface-variant">No hay transacciones en este periodo</td></tr>';
+                    if (revenueEl) revenueEl.textContent = '$0.00';
+                    if (expensesEl) expensesEl.textContent = '$0.00';
+                    if (profitEl) profitEl.textContent = '$0.00';
+                    if (ventasEl) ventasEl.textContent = '0';
+                    
+                    if (revenueChartInstance) {
+                        revenueChartInstance.destroy();
+                        revenueChartInstance = null;
+                    }
+                    if (categoryChartInstance) {
+                        categoryChartInstance.destroy();
+                        categoryChartInstance = null;
+                    }
+                    return;
+                }
+
+                let ingresos = 0;
+                let gastos = 0;
+                const ingresosPorFecha = {};
+                const ingresosPorCategoria = {};
+
+                filtradas.forEach(t => {
+                    const esIngreso = t.tipo === 'Ingreso';
+                    if (esIngreso) {
+                        ingresos += t.monto;
+                        const soloFecha = t.fecha.includes('T') ? t.fecha.split('T')[0] : t.fecha.split(' ')[0];
+                        ingresosPorFecha[soloFecha] = (ingresosPorFecha[soloFecha] || 0) + t.monto;
+                        ingresosPorCategoria[t.categoria] = (ingresosPorCategoria[t.categoria] || 0) + t.monto;
+                    } else {
+                        gastos += t.monto;
+                    }
+
+                    // Fila de la tabla
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-[#1F1F1F] hover:bg-[#1A1A1A] transition-colors";
+
+                    const montoClase = esIngreso ? 'text-primary-fixed' : 'text-error';
+                    const signo = esIngreso ? '+' : '-';
+                    const badgeClase = esIngreso 
+                        ? 'bg-primary-fixed/10 text-primary-fixed border-primary-fixed/20' 
+                        : 'bg-error/10 text-error border-error/20';
+
+                    tr.innerHTML = `
+                        <td class="p-4 text-on-surface-variant">${t.fecha}</td>
+                        <td class="p-4 font-medium">${t.descripcion}</td>
+                        <td class="p-4"><span class="px-2 py-1 rounded text-xs border ${badgeClase}">${t.categoria}</span></td>
+                        <td class="p-4 text-right font-bold ${montoClase}">${signo}$${Math.abs(t.monto).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                        <td class="p-4 text-on-surface-variant">${t.metodo}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                // Actualizar Tarjetas
+                if (revenueEl) revenueEl.textContent = `$${ingresos.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+                if (expensesEl) expensesEl.textContent = `$${gastos.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+                if (profitEl) profitEl.textContent = `$${(ingresos - gastos).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+                if (ventasEl) ventasEl.textContent = filtradas.length.toString();
+
+                // 3. Renderizar Gráficas con Chart.js
+                // Line Chart (Ingresos por fecha)
+                if (revenueChartInstance) {
+                    revenueChartInstance.destroy();
+                }
+                const ctxLine = document.getElementById('revenueChart') as HTMLCanvasElement;
+                if (ctxLine) {
+                    revenueChartInstance = new Chart(ctxLine, {
+                        type: 'line',
+                        data: {
+                            labels: Object.keys(ingresosPorFecha).reverse(), // Fechas
+                            datasets: [{
+                                label: 'Ingresos Diarios',
+                                data: Object.values(ingresosPorFecha).reverse(),
+                                borderColor: '#00ff41',
+                                backgroundColor: 'rgba(0, 255, 65, 0.1)',
+                                borderWidth: 3,
+                                pointBackgroundColor: '#00ff41',
+                                fill: true,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: { beginAtZero: true, grid: { color: '#333' } },
+                                x: { grid: { display: false } }
+                            }
+                        }
+                    });
+                }
+
+                // Bar Chart (Ingresos por categoría)
+                if (categoryChartInstance) {
+                    categoryChartInstance.destroy();
+                }
+                const ctxBar = document.getElementById('categoryChart') as HTMLCanvasElement;
+                if (ctxBar) {
+                    const categorias = Object.keys(ingresosPorCategoria);
+                    const montosCat = Object.values(ingresosPorCategoria);
+                    categoryChartInstance = new Chart(ctxBar, {
+                        type: 'bar',
+                        data: {
+                            labels: categorias,
+                            datasets: [{
+                                label: 'Ingresos',
+                                data: montosCat,
+                                backgroundColor: ['rgba(0, 255, 65, 0.3)', 'rgba(56, 189, 248, 0.3)', 'rgba(167, 139, 250, 0.3)'],
+                                borderColor: ['#00ff41', '#38bdf8', '#a78bfa'],
+                                borderWidth: 1,
+                                borderRadius: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: { beginAtZero: true, grid: { color: '#333' } },
+                                x: { grid: { display: false } }
+                            }
+                        }
+                    });
+                }
+            }
+
+            try {
+                // Cargar las transacciones iniciales
+                console.log('[Finanzas] Llamando a la API...');
                 const resTransacciones = await fetch(`${API_BASE_URL}?action=ultimasTransacciones`);
                 const dataTransacciones = await resTransacciones.json();
+                console.log('[Finanzas] Respuesta API:', dataTransacciones);
 
-                if (dataTransacciones.exito) {
-                    const transacciones = dataTransacciones.datos;
-                    tbody.innerHTML = ''; // Limpiar loader
+                if (dataTransacciones.exito && Array.isArray(dataTransacciones.datos)) {
+                    allTransactions = dataTransacciones.datos;
+                    console.log(`[Finanzas] ${allTransactions.length} transacciones cargadas.`);
+                    console.log('[Finanzas] Ejemplo de fecha:', allTransactions[0]?.fecha);
                     
-                    if (transacciones.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-on-surface-variant">No hay transacciones recientes</td></tr>';
-                    } else {
-                        // Variables para gráficas
-                        const ingresosPorFecha = {};
-                        const ingresosPorCategoria = {};
-
-                        transacciones.forEach(t => {
-                            const esIngreso = t.tipo === 'Ingreso';
-                            const tr = document.createElement('tr');
-                            tr.className = "border-b border-[#1F1F1F] hover:bg-[#1A1A1A] transition-colors";
-                            
-                            // Agrupar datos para gráficas
-                            if (esIngreso) {
-                                // Si la fecha tiene 'T' (formato ISO), cortamos ahí. Si tiene espacio, en el espacio.
-                                const soloFecha = t.fecha.includes('T') ? t.fecha.split('T')[0] : t.fecha.split(' ')[0];
-                                ingresosPorFecha[soloFecha] = (ingresosPorFecha[soloFecha] || 0) + t.monto;
-                                ingresosPorCategoria[t.categoria] = (ingresosPorCategoria[t.categoria] || 0) + t.monto;
-                            }
-
-                            // Color y badge para tabla
-                            const montoClase = esIngreso ? 'text-primary-fixed' : 'text-error';
-                            const signo = esIngreso ? '+' : '-';
-                            const badgeClase = esIngreso 
-                                ? 'bg-primary-fixed/10 text-primary-fixed border-primary-fixed/20' 
-                                : 'bg-error/10 text-error border-error/20';
-
-                            tr.innerHTML = `
-                                <td class="p-4 text-on-surface-variant">${t.fecha}</td>
-                                <td class="p-4 font-medium">${t.descripcion}</td>
-                                <td class="p-4"><span class="px-2 py-1 rounded text-xs border ${badgeClase}">${t.categoria}</span></td>
-                                <td class="p-4 text-right font-bold ${montoClase}">${signo}$${Math.abs(t.monto).toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                                <td class="p-4 text-on-surface-variant">${t.metodo}</td>
-                            `;
-                            tbody.appendChild(tr);
+                    // Inicializar los manejadores de clic de los filtros
+                    document.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const target = e.currentTarget as HTMLElement;
+                            const filtro = target.getAttribute('data-filter');
+                            if (filtro) filtrarYActualizar(filtro);
                         });
+                    });
 
-                        // 3. Renderizar Gráficas con Chart.js
-                        // Line Chart (Ingresos por fecha)
-                        const ctxLine = document.getElementById('revenueChart') as HTMLCanvasElement;
-                        if (ctxLine) {
-                            new Chart(ctxLine, {
-                                type: 'line',
-                                data: {
-                                    labels: Object.keys(ingresosPorFecha).reverse(), // Fechas
-                                    datasets: [{
-                                        label: 'Ingresos Diarios',
-                                        data: Object.values(ingresosPorFecha).reverse(),
-                                        borderColor: '#00ff41',
-                                        backgroundColor: 'rgba(0, 255, 65, 0.1)',
-                                        borderWidth: 3,
-                                        pointBackgroundColor: '#00ff41',
-                                        fill: true,
-                                        tension: 0.4
-                                    }]
-                                },
-                                options: {
-                                    responsive: true,
-                                    maintainAspectRatio: false,
-                                    plugins: { legend: { display: false } },
-                                    scales: {
-                                        y: { beginAtZero: true, grid: { color: '#333' } },
-                                        x: { grid: { display: false } }
-                                    }
-                                }
-                            });
-                        }
-
-                        // Bar Chart (Ingresos por categoría)
-                        const ctxBar = document.getElementById('categoryChart') as HTMLCanvasElement;
-                        if (ctxBar) {
-                            const categorias = Object.keys(ingresosPorCategoria);
-                            const montosCat = Object.values(ingresosPorCategoria);
-                            new Chart(ctxBar, {
-                                type: 'bar',
-                                data: {
-                                    labels: categorias,
-                                    datasets: [{
-                                        label: 'Ingresos',
-                                        data: montosCat,
-                                        backgroundColor: ['rgba(0, 255, 65, 0.3)', 'rgba(56, 189, 248, 0.3)', 'rgba(167, 139, 250, 0.3)'],
-                                        borderColor: ['#00ff41', '#38bdf8', '#a78bfa'],
-                                        borderWidth: 1,
-                                        borderRadius: 4
-                                    }]
-                                },
-                                options: {
-                                    responsive: true,
-                                    maintainAspectRatio: false,
-                                    plugins: { legend: { display: false } },
-                                    scales: {
-                                        y: { beginAtZero: true, grid: { color: '#333' } },
-                                        x: { grid: { display: false } }
-                                    }
-                                }
-                            });
-                        }
-                    }
+                    // Por defecto, aplicar el filtro de "Month"
+                    filtrarYActualizar('month');
+                } else {
+                    console.error('[Finanzas] La API respondió con exito=false o sin datos:', dataTransacciones);
+                    if (tbody) tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-error">Error API: ${dataTransacciones.error || 'Respuesta inesperada'}</td></tr>`;
+                    // Mostrar $0.00 en las tarjetas
+                    if (revenueEl) revenueEl.textContent = '$0.00';
+                    if (expensesEl) expensesEl.textContent = '$0.00';
+                    if (profitEl) profitEl.textContent = '$0.00';
+                    if (ventasEl) ventasEl.textContent = '0';
                 }
 
             } catch (err) {
-                console.error("Error cargando finanzas", err);
-                if(tbody) tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-error">Error cargando datos</td></tr>';
+                console.error('[Finanzas] Error de red o parseo:', err);
+                if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-error">No se pudo conectar con la API. Revisa la consola.</td></tr>';
+                if (revenueEl) revenueEl.textContent = 'Error';
+                if (expensesEl) expensesEl.textContent = 'Error';
+                if (profitEl) profitEl.textContent = 'Error';
+                if (ventasEl) ventasEl.textContent = '-';
             }
         });
     </script>
