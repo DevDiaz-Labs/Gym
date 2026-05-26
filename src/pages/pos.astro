@@ -15,10 +15,14 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                             <button data-tab="membresias" class="tab-btn font-label-caps text-label-caps text-primary-fixed border-b-2 border-primary-fixed pb-2 px-2">Membresías</button>
                             <button data-tab="otros" class="tab-btn font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface pb-2 px-2 transition-colors border-b-2 border-transparent">Productos</button>
                         </div>
-                        <div class="ml-4 pl-4 border-l border-outline-variant">
-                            <button class="font-label-caps text-label-caps bg-surface-container-highest text-primary-fixed border border-primary-fixed/30 rounded-lg px-4 py-2 hover:bg-surface-variant transition-colors flex items-center gap-2">
+                        <div class="ml-4 pl-4 border-l border-outline-variant flex gap-2">
+                            <button id="btn-nuevo-producto" class="font-label-caps text-label-caps bg-surface-container-highest text-primary-fixed border border-primary-fixed/30 rounded-lg px-4 py-2 hover:bg-surface-variant transition-colors flex items-center gap-2 cursor-pointer">
                                 <span class="material-symbols-outlined text-[16px]">add</span>
                                 Nuevo Producto
+                            </button>
+                            <button id="btn-productos-inactivos" class="font-label-caps text-label-caps bg-surface-container-highest text-on-surface-variant border border-outline-variant rounded-lg px-4 py-2 hover:bg-surface-variant transition-colors flex items-center gap-2 cursor-pointer">
+                                <span class="material-symbols-outlined text-[16px]">archive</span>
+                                Archivados
                             </button>
                         </div>
                     </div>
@@ -150,6 +154,140 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
         </aside>
     </div>
 
+    <!-- Modal Nuevo Producto -->
+    <div id="modal-nuevo-producto" class="fixed inset-0 bg-[#000000]/80 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-surface-container rounded-2xl w-full max-w-md border border-outline-variant shadow-2xl p-6 flex flex-col gap-6 scale-95 transition-transform duration-200">
+            <div class="flex justify-between items-center">
+                <h2 class="font-title-lg text-title-lg text-on-surface">Registrar Nuevo Producto</h2>
+                <button id="btn-close-modal" class="text-on-surface-variant hover:text-on-surface cursor-pointer bg-transparent border-0 p-1 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <form id="form-nuevo-producto" class="flex flex-col gap-4">
+                <div>
+                    <label class="block text-xs font-label-caps text-on-surface-variant mb-1">Nombre del Producto</label>
+                    <input type="text" id="nuevo-nombre" required class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary-fixed" placeholder="Ej. Proteína Whey 2kg">
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-label-caps text-on-surface-variant mb-1">Categoría</label>
+                    <select id="nuevo-categoria-select" class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary-fixed mb-2">
+                        <!-- Llenado dinámicamente -->
+                        <option value="nueva">Otra / Nueva categoría...</option>
+                    </select>
+                    <input type="text" id="nuevo-categoria-input" class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary-fixed hidden" placeholder="Escribe la nueva categoría">
+                </div>
+                
+                <div class="flex gap-4">
+                    <div class="flex-1">
+                        <label class="block text-xs font-label-caps text-on-surface-variant mb-1">Precio ($)</label>
+                        <input type="number" step="0.01" min="0" id="nuevo-precio" required class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary-fixed" placeholder="0.00">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-label-caps text-on-surface-variant mb-1">Stock Inicial</label>
+                        <input type="number" min="0" id="nuevo-stock" required class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary-fixed" placeholder="0">
+                    </div>
+                </div>
+                
+                <div class="pt-2 flex justify-end gap-3 mt-4 border-t border-outline-variant">
+                    <button type="button" id="btn-cancel-modal" class="px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-colors cursor-pointer border-0 bg-transparent">Cancelar</button>
+                    <button type="submit" id="btn-save-producto" class="px-6 py-2 bg-primary-fixed text-on-primary-fixed rounded-lg font-label-caps text-label-caps hover:bg-primary-fixed/90 transition-colors flex items-center gap-2 cursor-pointer shadow-md shadow-primary-fixed/20 border-0">
+                        <span class="material-symbols-outlined text-[18px]">save</span>
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Modal Productos Inactivos -->
+    <div id="modal-productos-inactivos" class="fixed inset-0 bg-[#000000]/80 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-surface-container rounded-2xl w-full max-w-lg border border-outline-variant shadow-2xl p-6 flex flex-col gap-6 scale-95 transition-transform duration-200">
+            <div class="flex justify-between items-center">
+                <h2 class="font-title-lg text-title-lg text-on-surface">Productos Archivados</h2>
+                <button id="btn-close-modal-inactivos" class="text-on-surface-variant hover:text-on-surface cursor-pointer bg-transparent border-0 p-1 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <div id="loading-inactivos" class="py-6 flex justify-center hidden">
+                <span class="material-symbols-outlined animate-spin text-primary-fixed text-2xl">progress_activity</span>
+            </div>
+
+            <div id="lista-inactivos-container" class="max-h-96 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                <!-- Se cargan dinámicamente -->
+            </div>
+            
+            <div class="pt-2 flex justify-end mt-2 border-t border-outline-variant">
+                <button type="button" id="btn-cerrar-modal-inactivos" class="px-4 py-2 font-label-caps text-label-caps text-on-surface hover:bg-surface-container-highest rounded-lg transition-colors cursor-pointer border border-outline-variant bg-transparent">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Reabastecer Producto -->
+    <div id="modal-reabastecer-producto" class="fixed inset-0 bg-[#000000]/80 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-surface-container rounded-2xl w-full max-w-md border border-outline-variant shadow-2xl p-6 flex flex-col gap-6 scale-95 transition-transform duration-200">
+            <div class="flex justify-between items-center">
+                <h2 id="title-modal-reabastecer" class="font-title-lg text-title-lg text-on-surface">Reabastecer Stock</h2>
+                <button id="btn-close-modal-reabastecer" class="text-on-surface-variant hover:text-on-surface cursor-pointer bg-transparent border-0 p-1 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <form id="form-reabastecer-producto" class="flex flex-col gap-4">
+                <input type="hidden" id="reabastecer-codigo">
+                
+                <div>
+                    <label class="block text-xs font-label-caps text-on-surface-variant mb-1">Producto</label>
+                    <input type="text" id="reabastecer-nombre" disabled class="w-full bg-surface-container-low border border-outline-variant/50 rounded-lg px-3 py-2 text-sm text-on-surface-variant opacity-80 cursor-not-allowed">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-label-caps text-on-surface-variant mb-1">Tipo de Ajuste</label>
+                    <select id="reabastecer-tipo" class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary-fixed">
+                        <option value="reabastecer">➕ Agregar nuevo stock (Compra)</option>
+                        <option value="ajuste">🔄 Establecer stock exacto (Inventario físico)</option>
+                    </select>
+                </div>
+                
+                <div class="flex gap-4">
+                    <div class="flex-1">
+                        <label class="block text-xs font-label-caps text-on-surface-variant mb-1">Stock Actual</label>
+                        <input type="text" id="reabastecer-stock-actual" disabled class="w-full bg-surface-container-low border border-outline-variant/50 rounded-lg px-3 py-2 text-sm text-on-surface-variant opacity-80 cursor-not-allowed">
+                    </div>
+                    <div class="flex-1">
+                        <label id="label-reabastecer-cantidad" class="block text-xs font-label-caps text-on-surface-variant mb-1">Cantidad a Agregar</label>
+                        <input type="number" min="1" id="reabastecer-cantidad" required class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary-fixed" placeholder="Ej. 10">
+                    </div>
+                </div>
+
+                <div id="reabastecer-gasto-container" class="bg-surface-container-high p-4 rounded-lg border border-outline-variant mt-2 flex flex-col gap-3">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary-fixed text-[18px]">account_balance</span>
+                        <span class="font-label-caps text-label-caps text-on-surface">Registrar Gasto</span>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-label-caps text-on-surface-variant mb-1">Costo Total de Compra ($)</label>
+                        <input type="number" step="0.01" min="0.01" id="reabastecer-costo" required class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary-fixed" placeholder="0.00">
+                        <p class="text-[10px] text-on-surface-variant mt-1">Este egreso se registrará automáticamente en Finanzas.</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-label-caps text-on-surface-variant mb-1">Concepto del Gasto</label>
+                        <input type="text" id="reabastecer-concepto" class="w-full bg-surface-container-highest border border-outline-variant rounded-lg px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary-fixed" placeholder="Opcional. Ej. Compra de stock">
+                    </div>
+                </div>
+                
+                <div class="pt-2 flex justify-end gap-3 mt-2 border-t border-outline-variant">
+                    <button type="button" id="btn-cancel-modal-reabastecer" class="px-4 py-2 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-colors cursor-pointer border-0 bg-transparent">Cancelar</button>
+                    <button type="submit" id="btn-save-reabastecer" class="px-6 py-2 bg-primary-fixed text-on-primary-fixed rounded-lg font-label-caps text-label-caps hover:bg-primary-fixed/90 transition-colors flex items-center gap-2 cursor-pointer shadow-md shadow-primary-fixed/20 border-0">
+                        <span class="material-symbols-outlined text-[18px]">inventory</span>
+                        <span id="text-btn-reabastecer">Reabastecer</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbz-5zbcyoNX5sSrVp39Ocj6NbTqIP7XSHLti5o2AfrOl5dcD_-6mf2ieLN2XkldklCNAQ/exec';
@@ -172,6 +310,31 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
             const selectedMemberName = document.getElementById('selected-member-name');
             const selectedMemberIdDisplay = document.getElementById('selected-member-id-display');
             const btnClearMember = document.getElementById('btn-clear-member');
+            
+            // Papelera / Inactivos Elements
+            const btnInactivos = document.getElementById('btn-productos-inactivos');
+            const modalInactivos = document.getElementById('modal-productos-inactivos');
+            const btnCloseModalInactivos = document.getElementById('btn-close-modal-inactivos');
+            const btnCerrarModalInactivos = document.getElementById('btn-cerrar-modal-inactivos');
+            const loadingInactivos = document.getElementById('loading-inactivos');
+            const listaInactivosContainer = document.getElementById('lista-inactivos-container');
+            
+            // Reabastecer Elements
+            const modalReabastecer = document.getElementById('modal-reabastecer-producto');
+            const btnCloseModalReabastecer = document.getElementById('btn-close-modal-reabastecer');
+            const btnCancelModalReabastecer = document.getElementById('btn-cancel-modal-reabastecer');
+            const formReabastecer = document.getElementById('form-reabastecer-producto');
+            const inputReabastecerCodigo = document.getElementById('reabastecer-codigo');
+            const inputReabastecerNombre = document.getElementById('reabastecer-nombre');
+            const inputReabastecerStockActual = document.getElementById('reabastecer-stock-actual');
+            const inputReabastecerCantidad = document.getElementById('reabastecer-cantidad') as HTMLInputElement;
+            const inputReabastecerCosto = document.getElementById('reabastecer-costo') as HTMLInputElement;
+            const inputReabastecerConcepto = document.getElementById('reabastecer-concepto') as HTMLInputElement;
+            const selectReabastecerTipo = document.getElementById('reabastecer-tipo') as HTMLSelectElement;
+            const containerReabastecerGasto = document.getElementById('reabastecer-gasto-container') as HTMLDivElement;
+            const labelReabastecerCantidad = document.getElementById('label-reabastecer-cantidad') as HTMLLabelElement;
+            const titleModalReabastecer = document.getElementById('title-modal-reabastecer') as HTMLHeadingElement;
+            const textBtnReabastecer = document.getElementById('text-btn-reabastecer') as HTMLSpanElement;
 
             let catalogoProductos = [];
             let cart = [];
@@ -251,6 +414,12 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                         <div class="h-32 bg-surface-container-highest rounded-lg mb-4 overflow-hidden relative flex items-center justify-center">
                             <span class="material-symbols-outlined text-outline-variant text-3xl">image</span>
                             ${chipStock}
+                            <button class="btn-reabastecer-producto absolute top-2 left-2 w-7 h-7 bg-primary-fixed/90 text-on-primary-fixed rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer border border-primary-fixed/50 shadow-sm shadow-black/50 hover:bg-primary-fixed backdrop-blur" data-codigo="${producto.codigo}" data-nombre="${producto.nombre}" data-stock="${producto.stock}" title="Reabastecer stock">
+                                <span class="material-symbols-outlined text-[14px]">inventory</span>
+                            </button>
+                            <button class="btn-delete-producto absolute top-2 left-10 w-7 h-7 bg-error/90 text-on-error rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer border border-error/50 shadow-sm shadow-black/50 hover:bg-error backdrop-blur" data-codigo="${producto.codigo}" title="Eliminar producto">
+                                <span class="material-symbols-outlined text-[14px]">delete</span>
+                            </button>
                         </div>
                         <h3 class="font-data-table text-data-table text-on-surface mb-1 truncate">${producto.nombre}</h3>
                         <p class="font-label-caps text-label-caps text-on-surface-variant mb-4 flex-1 text-xs">${producto.categoria}</p>
@@ -266,6 +435,17 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                             addToCart(producto);
                         });
                     }
+                    
+                    card.querySelector('.btn-delete-producto').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        eliminarProductoReq(producto);
+                    });
+                    
+                    card.querySelector('.btn-reabastecer-producto').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const btn = e.currentTarget;
+                        abrirModalReabastecer(btn.dataset.codigo, btn.dataset.nombre, btn.dataset.stock);
+                    });
 
                     otrosGrid.appendChild(card);
                 });
@@ -404,63 +584,206 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                 renderProductos(productosSearchInput.value.trim());
             };
 
-            // Fetch memberships and products
-            grid.classList.add('hidden');
-            loading.classList.remove('hidden');
-
-            try {
-                // Fetch memberships
-                const resMembresias = await fetch(`${API_BASE_URL}?action=catalogoMembresias`);
-                const dataMembresias = await resMembresias.json();
-
-                if (dataMembresias.exito) {
-                    grid.innerHTML = '';
-                    dataMembresias.datos.forEach(membresia => {
-                        const card = document.createElement('div');
-                        card.className = "bg-surface-container rounded-xl border border-outline-variant p-4 flex flex-col hover:border-primary-fixed/50 transition-colors group";
-                        
-                        card.innerHTML = `
-                            <div class="h-32 bg-surface-container-highest rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
-                                <span class="material-symbols-outlined text-[48px] text-primary-fixed/30 group-hover:text-primary-fixed/70 transition-colors" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
-                                <div class="absolute top-2 right-2 bg-surface-container-low px-2 py-1 rounded text-[10px] font-label-caps text-on-surface-variant border border-outline-variant">
-                                    SOLO VISTA
-                                </div>
-                            </div>
-                            <h3 class="font-data-table text-data-table text-on-surface mb-1">${membresia.nombre}</h3>
-                            <p class="font-label-caps text-label-caps text-on-surface-variant mb-4 flex-1">Vigencia: ${membresia.duracion} días</p>
-                            <div class="flex justify-between items-center mt-auto">
-                                <span class="font-headline-md text-headline-md text-primary-fixed">$${membresia.precio}</span>
-                                <span class="text-on-surface-variant text-xs font-label-caps">Inscribir en Menú</span>
-                            </div>
-                        `;
-                        grid.appendChild(card);
+            // Función para eliminar
+            const eliminarProductoReq = async (producto) => {
+                if(!confirm(`¿Estás seguro de que deseas eliminar permanentemente "${producto.nombre}" (Código: ${producto.codigo})?`)) return;
+                
+                try {
+                    const cardBtn = document.querySelector(`button.btn-delete-producto[data-codigo="${producto.codigo}"]`);
+                    if(cardBtn) cardBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[14px]">progress_activity</span>';
+                    
+                    const payload = {
+                        action: 'eliminarProducto',
+                        codigo: producto.codigo
+                    };
+                    const res = await fetch(API_BASE_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
                     });
+                    const data = await res.json();
+                    
+                    if(data.exito) {
+                        // Eliminar del carrito si estaba agregado
+                        cart = cart.filter(i => String(i.codigo) !== String(producto.codigo));
+                        renderCart();
+                        // Recargar catálogo
+                        cargarCatalogos(true);
+                    } else {
+                        alert('Error al eliminar: ' + data.mensaje);
+                        if(cardBtn) cardBtn.innerHTML = '<span class="material-symbols-outlined text-[14px]">delete</span>';
+                    }
+                } catch(err) {
+                    alert('Error de conexión.');
                 }
+            };
 
-                // Fetch products
-                const resProductos = await fetch(`${API_BASE_URL}?action=catalogoProductos`);
-                const dataProductos = await resProductos.json();
-
-                if (dataProductos.exito) {
-                    catalogoProductos = dataProductos.datos;
-                    renderProductos(''); // Render inicial sin filtro
+            const cargarCatalogos = async (soloProductos = false) => {
+                if (!soloProductos) {
+                    grid.classList.add('hidden');
                 } else {
-                    otrosGrid.innerHTML = `<p class="text-error col-span-4">${dataProductos.mensaje || 'Error cargando catálogo de productos.'}</p>`;
+                    otrosGrid.innerHTML = '<p class="text-on-surface-variant col-span-4 text-center py-8"><span class="material-symbols-outlined animate-spin text-primary-fixed text-2xl inline-block align-middle mr-2">progress_activity</span>Actualizando productos...</p>';
                 }
+                loading.classList.remove('hidden');
 
-                // Búsqueda local en tiempo real
-                productosSearchInput.addEventListener('input', () => {
-                    renderProductos(productosSearchInput.value.trim());
+                try {
+                    // Fetch memberships (only if not soloProductos)
+                    if (!soloProductos) {
+                        const resMembresias = await fetch(`${API_BASE_URL}?action=catalogoMembresias`);
+                        const dataMembresias = await resMembresias.json();
+
+                        if (dataMembresias.exito) {
+                            grid.innerHTML = '';
+                            dataMembresias.datos.forEach(membresia => {
+                                const card = document.createElement('div');
+                                card.className = "bg-surface-container rounded-xl border border-outline-variant p-4 flex flex-col hover:border-primary-fixed/50 transition-colors group";
+                                
+                                card.innerHTML = `
+                                    <div class="h-32 bg-surface-container-highest rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+                                        <span class="material-symbols-outlined text-[48px] text-primary-fixed/30 group-hover:text-primary-fixed/70 transition-colors" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                                        <div class="absolute top-2 right-2 bg-surface-container-low px-2 py-1 rounded text-[10px] font-label-caps text-on-surface-variant border border-outline-variant">
+                                            SOLO VISTA
+                                        </div>
+                                    </div>
+                                    <h3 class="font-data-table text-data-table text-on-surface mb-1">${membresia.nombre}</h3>
+                                    <p class="font-label-caps text-label-caps text-on-surface-variant mb-4 flex-1">Vigencia: ${membresia.duracion} días</p>
+                                    <div class="flex justify-between items-center mt-auto">
+                                        <span class="font-headline-md text-headline-md text-primary-fixed">$${membresia.precio}</span>
+                                        <span class="text-on-surface-variant text-xs font-label-caps">Inscribir en Menú</span>
+                                    </div>
+                                `;
+                                grid.appendChild(card);
+                            });
+                        }
+                    }
+
+                    // Fetch products
+                    const resProductos = await fetch(`${API_BASE_URL}?action=catalogoProductos`);
+                    const dataProductos = await resProductos.json();
+
+                    if (dataProductos.exito) {
+                        catalogoProductos = dataProductos.datos;
+                        renderProductos(productosSearchInput.value.trim()); // Render con filtro actual
+                    } else {
+                        otrosGrid.innerHTML = `<p class="text-error col-span-4">${dataProductos.mensaje || 'Error cargando catálogo de productos.'}</p>`;
+                    }
+                } catch (err) {
+                    console.error("Error", err);
+                    if(!soloProductos) grid.innerHTML = '<p class="text-error col-span-4">Error conectando con el servidor.</p>';
+                    otrosGrid.innerHTML = '<p class="text-error col-span-4">Error conectando con el servidor.</p>';
+                } finally {
+                    loading.classList.add('hidden');
+                    if (!soloProductos) grid.classList.remove('hidden');
+                }
+            };
+
+            // Llamada inicial
+            cargarCatalogos();
+
+            // Modal logic
+            const modalNuevo = document.getElementById('modal-nuevo-producto');
+            const btnNuevo = document.getElementById('btn-nuevo-producto');
+            const btnCloseModal = document.getElementById('btn-close-modal');
+            const btnCancelModal = document.getElementById('btn-cancel-modal');
+            const formNuevo = document.getElementById('form-nuevo-producto') as HTMLFormElement;
+            const selectCategoria = document.getElementById('nuevo-categoria-select') as HTMLSelectElement;
+            const inputCategoria = document.getElementById('nuevo-categoria-input') as HTMLInputElement;
+            const btnSaveProducto = document.getElementById('btn-save-producto') as HTMLButtonElement;
+            
+            btnNuevo.addEventListener('click', () => {
+                const categorias = [...new Set(catalogoProductos.map(p => p.categoria))].filter(Boolean).sort();
+                selectCategoria.innerHTML = '';
+                categorias.forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat;
+                    opt.textContent = cat;
+                    selectCategoria.appendChild(opt);
                 });
-
-            } catch (err) {
-                console.error("Error", err);
-                grid.innerHTML = '<p class="text-error col-span-4">Error conectando con el servidor.</p>';
-                otrosGrid.innerHTML = '<p class="text-error col-span-4">Error conectando con el servidor.</p>';
-            } finally {
-                loading.classList.add('hidden');
-                grid.classList.remove('hidden');
-            }
+                const optNueva = document.createElement('option');
+                optNueva.value = 'nueva';
+                optNueva.textContent = 'Otra / Nueva categoría...';
+                selectCategoria.appendChild(optNueva);
+                
+                if(categorias.length === 0) {
+                    selectCategoria.value = 'nueva';
+                }
+                
+                if(selectCategoria.value === 'nueva') {
+                    inputCategoria.classList.remove('hidden');
+                    inputCategoria.setAttribute('required', 'true');
+                } else {
+                    inputCategoria.classList.add('hidden');
+                    inputCategoria.removeAttribute('required');
+                }
+                
+                modalNuevo.classList.remove('hidden');
+                setTimeout(() => {
+                    modalNuevo.firstElementChild.classList.remove('scale-95');
+                    modalNuevo.firstElementChild.classList.add('scale-100');
+                }, 10);
+            });
+            
+            const cerrarModal = () => {
+                modalNuevo.firstElementChild.classList.remove('scale-100');
+                modalNuevo.firstElementChild.classList.add('scale-95');
+                setTimeout(() => {
+                    modalNuevo.classList.add('hidden');
+                    formNuevo.reset();
+                    inputCategoria.classList.add('hidden');
+                    inputCategoria.removeAttribute('required');
+                }, 200);
+            };
+            
+            btnCloseModal.addEventListener('click', cerrarModal);
+            btnCancelModal.addEventListener('click', cerrarModal);
+            
+            selectCategoria.addEventListener('change', () => {
+                if (selectCategoria.value === 'nueva') {
+                    inputCategoria.classList.remove('hidden');
+                    inputCategoria.setAttribute('required', 'true');
+                    inputCategoria.focus();
+                } else {
+                    inputCategoria.classList.add('hidden');
+                    inputCategoria.removeAttribute('required');
+                }
+            });
+            
+            formNuevo.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const nombre = (document.getElementById('nuevo-nombre') as HTMLInputElement).value;
+                const categoria = selectCategoria.value === 'nueva' ? inputCategoria.value.trim() : selectCategoria.value;
+                const precio = (document.getElementById('nuevo-precio') as HTMLInputElement).value;
+                const stock = (document.getElementById('nuevo-stock') as HTMLInputElement).value;
+                
+                btnSaveProducto.disabled = true;
+                btnSaveProducto.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span> Guardando...';
+                
+                try {
+                    const payload = {
+                        action: 'registrarProducto',
+                        nombre,
+                        categoria: categoria || 'Sin categoría',
+                        precio: parseFloat(precio),
+                        stock: parseInt(stock, 10)
+                    };
+                    const res = await fetch(API_BASE_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+                    
+                    if (data.exito) {
+                        cerrarModal();
+                        cargarCatalogos(true); // Recargar solo productos
+                    } else {
+                        alert('Error al registrar: ' + data.mensaje);
+                    }
+                } catch(err) {
+                    alert('Error de conexión.');
+                } finally {
+                    btnSaveProducto.disabled = false;
+                    btnSaveProducto.innerHTML = '<span class="material-symbols-outlined text-[18px]">save</span> Guardar';
+                }
+            });
 
             // Setup payment methods
             const paymentMethodContainer = document.getElementById('payment-method-container');
@@ -573,6 +896,198 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                 } finally {
                     btnProcesarPago.removeAttribute('disabled');
                     btnProcesarPago.innerHTML = '<span class="material-symbols-outlined">point_of_sale</span> Procesar Pago';
+                }
+            });
+
+            // Modal inactivos logic
+            btnInactivos.addEventListener('click', async () => {
+                modalInactivos.classList.remove('hidden');
+                setTimeout(() => {
+                    modalInactivos.firstElementChild.classList.remove('scale-95');
+                    modalInactivos.firstElementChild.classList.add('scale-100');
+                }, 10);
+                await cargarProductosInactivos();
+            });
+
+            const cerrarModalInactivos = () => {
+                modalInactivos.firstElementChild.classList.remove('scale-100');
+                modalInactivos.firstElementChild.classList.add('scale-95');
+                setTimeout(() => {
+                    modalInactivos.classList.add('hidden');
+                    listaInactivosContainer.innerHTML = '';
+                }, 200);
+            };
+
+            btnCloseModalInactivos.addEventListener('click', cerrarModalInactivos);
+            btnCerrarModalInactivos.addEventListener('click', cerrarModalInactivos);
+
+            const cargarProductosInactivos = async () => {
+                loadingInactivos.classList.remove('hidden');
+                listaInactivosContainer.innerHTML = '';
+                try {
+                    const res = await fetch(`${API_BASE_URL}?action=catalogoProductosInactivos`);
+                    const data = await res.json();
+                    if (data.exito) {
+                        if (data.datos.length === 0) {
+                            listaInactivosContainer.innerHTML = '<p class="text-on-surface-variant text-center py-4">No hay productos archivados.</p>';
+                        } else {
+                            data.datos.forEach(prod => {
+                                const row = document.createElement('div');
+                                row.className = "flex items-center justify-between bg-surface-container-highest p-3 rounded-lg border border-outline-variant gap-4";
+                                row.innerHTML = `
+                                    <div class="flex flex-col min-w-0 flex-1">
+                                        <span class="font-body-md text-on-surface font-semibold truncate">${prod.nombre}</span>
+                                        <span class="text-xs text-on-surface-variant truncate">${prod.categoria} | $${prod.precio} | Stock: ${prod.stock}</span>
+                                    </div>
+                                    <button class="btn-reactivar-prod font-label-caps text-label-caps bg-primary-fixed text-on-primary-fixed hover:bg-primary-fixed/90 px-3 py-1.5 rounded transition-colors flex items-center gap-1 cursor-pointer border-0 shrink-0" data-codigo="${prod.codigo}">
+                                        <span class="material-symbols-outlined text-[16px]">restore</span>
+                                        Reactivar
+                                    </button>
+                                `;
+                                
+                                row.querySelector('.btn-reactivar-prod').addEventListener('click', async (e) => {
+                                    const btn = e.currentTarget as HTMLButtonElement;
+                                    btn.disabled = true;
+                                    btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">progress_activity</span>';
+                                    try {
+                                        const reactRes = await fetch(API_BASE_URL, {
+                                            method: 'POST',
+                                            body: JSON.stringify({
+                                                action: 'reactivarProducto',
+                                                codigo: prod.codigo
+                                            })
+                                        });
+                                        const reactData = await reactRes.json();
+                                        if (reactData.exito) {
+                                            row.remove();
+                                            if (listaInactivosContainer.children.length === 0) {
+                                                listaInactivosContainer.innerHTML = '<p class="text-on-surface-variant text-center py-4">No hay productos archivados.</p>';
+                                            }
+                                            // Recargar catálogo de productos activos
+                                            await cargarCatalogos(true);
+                                        } else {
+                                            alert('Error: ' + reactData.mensaje);
+                                            btn.disabled = false;
+                                            btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">restore</span> Reactivar';
+                                        }
+                                    } catch (err) {
+                                        alert('Error al reactivar.');
+                                        btn.disabled = false;
+                                        btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">restore</span> Reactivar';
+                                    }
+                                });
+                                
+                                listaInactivosContainer.appendChild(row);
+                            });
+                        }
+                    } else {
+                        listaInactivosContainer.innerHTML = `<p class="text-error text-center py-4">${data.mensaje || 'Error al cargar inactivos.'}</p>`;
+                    }
+                } catch(err) {
+                    listaInactivosContainer.innerHTML = '<p class="text-error text-center py-4">Error de conexión al cargar papelera.</p>';
+                } finally {
+                    loadingInactivos.classList.add('hidden');
+                }
+            };
+
+            // Modal Reabastecer logic
+            window.abrirModalReabastecer = (codigo, nombre, stock) => {
+                inputReabastecerCodigo.value = codigo;
+                inputReabastecerNombre.value = nombre;
+                inputReabastecerStockActual.value = stock;
+                inputReabastecerCantidad.value = '';
+                inputReabastecerCosto.value = '';
+                inputReabastecerConcepto.value = '';
+                
+                // Reset a tipo reabastecer por defecto
+                selectReabastecerTipo.value = 'reabastecer';
+                titleModalReabastecer.textContent = "Reabastecer Stock";
+                labelReabastecerCantidad.textContent = "Cantidad a Agregar";
+                inputReabastecerCantidad.min = "1";
+                inputReabastecerCantidad.placeholder = "Ej. 10";
+                containerReabastecerGasto.classList.remove('hidden');
+                inputReabastecerCosto.setAttribute('required', 'true');
+                textBtnReabastecer.textContent = "Reabastecer";
+                
+                modalReabastecer.classList.remove('hidden');
+                setTimeout(() => {
+                    modalReabastecer.firstElementChild.classList.remove('scale-95');
+                    modalReabastecer.firstElementChild.classList.add('scale-100');
+                }, 10);
+            };
+
+            selectReabastecerTipo.addEventListener('change', () => {
+                const tipo = selectReabastecerTipo.value;
+                if (tipo === 'reabastecer') {
+                    titleModalReabastecer.textContent = "Reabastecer Stock";
+                    labelReabastecerCantidad.textContent = "Cantidad a Agregar";
+                    inputReabastecerCantidad.min = "1";
+                    inputReabastecerCantidad.placeholder = "Ej. 10";
+                    containerReabastecerGasto.classList.remove('hidden');
+                    inputReabastecerCosto.setAttribute('required', 'true');
+                    textBtnReabastecer.textContent = "Reabastecer";
+                } else {
+                    titleModalReabastecer.textContent = "Ajustar Stock";
+                    labelReabastecerCantidad.textContent = "Nuevo Stock Exacto";
+                    inputReabastecerCantidad.min = "0";
+                    inputReabastecerCantidad.placeholder = "Ej. 5";
+                    containerReabastecerGasto.classList.add('hidden');
+                    inputReabastecerCosto.removeAttribute('required');
+                    textBtnReabastecer.textContent = "Ajustar Stock";
+                }
+            });
+
+            const cerrarModalReabastecer = () => {
+                modalReabastecer.firstElementChild.classList.remove('scale-100');
+                modalReabastecer.firstElementChild.classList.add('scale-95');
+                setTimeout(() => {
+                    modalReabastecer.classList.add('hidden');
+                }, 200);
+            };
+
+            btnCloseModalReabastecer.addEventListener('click', cerrarModalReabastecer);
+            btnCancelModalReabastecer.addEventListener('click', cerrarModalReabastecer);
+            modalReabastecer.addEventListener('click', (e) => {
+                if(e.target === modalReabastecer) cerrarModalReabastecer();
+            });
+
+            formReabastecer.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const btnSubmit = document.getElementById('btn-save-reabastecer');
+                const originalText = btnSubmit.innerHTML;
+                
+                btnSubmit.disabled = true;
+                btnSubmit.innerHTML = `<span class="material-symbols-outlined animate-spin">progress_activity</span> Guardando...`;
+
+                const datos = {
+                    action: 'reabastecerProducto',
+                    codigo: inputReabastecerCodigo.value,
+                    tipo: selectReabastecerTipo.value,
+                    cantidad: inputReabastecerCantidad.value,
+                    costo: selectReabastecerTipo.value === 'reabastecer' ? inputReabastecerCosto.value : '0',
+                    concepto: selectReabastecerTipo.value === 'reabastecer' ? inputReabastecerConcepto.value : ''
+                };
+
+                try {
+                    const res = await fetch(API_BASE_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(datos)
+                    });
+                    const resData = await res.json();
+                    
+                    if(resData.exito) {
+                        alert(resData.mensaje);
+                        cerrarModalReabastecer();
+                        await cargarCatalogos(true); // Recargar catálogo para actualizar UI
+                    } else {
+                        alert('Error: ' + resData.mensaje);
+                    }
+                } catch(err) {
+                    alert('Error de red al actualizar el stock del producto.');
+                } finally {
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = originalText;
                 }
             });
 
