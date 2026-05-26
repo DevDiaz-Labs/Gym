@@ -24,6 +24,19 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                     </div>
                 </div>
 
+                <!-- Barra de búsqueda local (solo visible en tab Productos) -->
+                <div id="productos-search-bar" class="hidden mb-stack-md">
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px] pointer-events-none">search</span>
+                        <input
+                            type="text"
+                            id="productos-search-input"
+                            placeholder="Buscar por nombre o categoría..."
+                            class="w-full bg-surface-container-highest border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-sm text-on-surface placeholder-on-surface-variant focus:outline-none focus:border-primary-fixed transition-colors"
+                        />
+                    </div>
+                </div>
+
                 <!-- Loader -->
                 <div id="loading-pos" class="py-12 flex justify-center hidden">
                     <span class="material-symbols-outlined animate-spin text-primary-fixed text-4xl">progress_activity</span>
@@ -59,17 +72,17 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
         <!-- Right Sidebar: Shopping Cart / Checkout -->
         <aside class="w-96 min-w-[384px] border-l border-outline-variant bg-surface-container flex flex-col z-10 shadow-[-10px_0_30px_rgba(0,0,0,0.5)]">
             <!-- Cart Header -->
-            <div class="p-container-margin border-b border-outline-variant flex justify-between items-center">
-                <h2 class="font-headline-md text-headline-md text-on-background">Carrito Actual</h2>
-                <span id="cart-item-count" class="bg-primary-container/20 text-primary-fixed px-2 py-1 rounded font-label-caps text-label-caps">0 Items</span>
+            <div class="px-4 py-3 border-b border-outline-variant flex justify-between items-center">
+                <h2 class="font-title-md text-title-md text-on-background">Carrito Actual</h2>
+                <span id="cart-item-count" class="bg-primary-container/20 text-primary-fixed px-2 py-0.5 rounded font-label-caps text-label-caps">0 Items</span>
             </div>
 
             <!-- Customer Selector -->
-            <div class="p-container-margin border-b border-outline-variant space-y-2">
+            <div class="px-4 py-3 border-b border-outline-variant space-y-1.5">
                 <span class="font-label-caps text-[10px] text-on-surface-variant block">Cliente</span>
                 <div class="flex gap-2">
-                    <input type="text" id="member-search-input" placeholder="ID de Socio (Opcional)" class="flex-1 bg-surface-container-highest border border-outline-variant rounded px-3 py-2 text-xs text-on-surface focus:outline-none focus:border-primary-fixed" />
-                    <button id="btn-search-member" class="bg-surface-container-highest border border-outline-variant hover:border-primary-fixed text-on-surface px-3 rounded transition-colors flex items-center justify-center cursor-pointer">
+                    <input type="text" id="member-search-input" placeholder="ID de Socio (Opcional)" class="flex-1 bg-surface-container-highest border border-outline-variant rounded px-3 py-1.5 text-xs text-on-surface focus:outline-none focus:border-primary-fixed" />
+                    <button id="btn-search-member" class="bg-surface-container-highest border border-outline-variant hover:border-primary-fixed text-on-surface px-3 py-1.5 rounded transition-colors flex items-center justify-center cursor-pointer">
                         <span class="material-symbols-outlined text-[16px]">search</span>
                     </button>
                 </div>
@@ -85,7 +98,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
             </div>
 
             <!-- Cart Items List -->
-            <div id="cart-items-container" class="flex-1 overflow-y-auto p-container-margin space-y-4">
+            <div id="cart-items-container" class="flex-1 overflow-y-auto min-h-0 p-4 space-y-3 custom-scrollbar">
                 <!-- Loaded dynamically -->
                 <div class="text-center text-on-surface-variant py-8 font-body-md">
                     <span class="material-symbols-outlined text-4xl block mb-2 text-outline-variant">shopping_cart</span>
@@ -94,43 +107,43 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
             </div>
 
             <!-- Checkout Section -->
-            <div class="p-container-margin border-t border-outline-variant bg-surface-container-low">
+            <div class="p-4 border-t border-outline-variant bg-surface-container-low shrink-0">
                 <!-- Totals -->
-                <div class="space-y-2 mb-stack-md">
-                    <div class="flex justify-between font-body-md text-body-md text-on-surface-variant">
+                <div class="space-y-1 mb-3">
+                    <div class="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
                         <span>Subtotal</span>
                         <span id="cart-subtotal">$0.00</span>
                     </div>
-                    <div class="flex justify-between font-body-md text-body-md text-on-surface-variant">
+                    <div class="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
                         <span>IVA (16%)</span>
                         <span id="cart-iva">$0.00</span>
                     </div>
-                    <div class="flex justify-between font-headline-md text-headline-md text-primary-fixed pt-2 border-t border-outline-variant">
+                    <div class="flex justify-between font-title-md text-title-md text-primary-fixed pt-1 border-t border-outline-variant">
                         <span>Total</span>
                         <span id="cart-total">$0.00</span>
                     </div>
                 </div>
                 <!-- Payment Methods -->
-                <div class="mb-stack-md">
-                    <span class="font-label-caps text-label-caps text-on-surface-variant block mb-2">Método de Pago</span>
+                <div class="mb-3">
+                    <span class="font-label-caps text-[10px] text-on-surface-variant block mb-1">Método de Pago</span>
                     <div class="flex bg-surface-container-highest rounded-lg p-1 border border-outline-variant" id="payment-method-container">
-                        <button data-metodo="Efectivo" class="payment-method-btn flex-1 py-2 bg-surface-container rounded shadow-sm flex flex-col items-center justify-center text-primary-fixed border border-primary-fixed/30 transition-colors">
-                            <span class="material-symbols-outlined text-[20px] mb-1">payments</span>
-                            <span class="font-label-caps text-[10px]">Efectivo</span>
+                        <button data-metodo="Efectivo" class="payment-method-btn flex-1 py-1 bg-surface-container rounded shadow-sm flex flex-col items-center justify-center text-primary-fixed border border-primary-fixed/30 transition-colors">
+                            <span class="material-symbols-outlined text-[16px] mb-0.5">payments</span>
+                            <span class="font-label-caps text-[9px]">Efectivo</span>
                         </button>
-                        <button data-metodo="Tarjeta" class="payment-method-btn flex-1 py-2 rounded flex flex-col items-center justify-center text-on-surface hover:text-primary-fixed transition-colors">
-                            <span class="material-symbols-outlined text-[20px] mb-1">credit_card</span>
-                            <span class="font-label-caps text-[10px]">Tarjeta</span>
+                        <button data-metodo="Tarjeta" class="payment-method-btn flex-1 py-1 rounded flex flex-col items-center justify-center text-on-surface hover:text-primary-fixed transition-colors border-0 bg-transparent">
+                            <span class="material-symbols-outlined text-[16px] mb-0.5">credit_card</span>
+                            <span class="font-label-caps text-[9px]">Tarjeta</span>
                         </button>
-                        <button data-metodo="Transferencia" class="payment-method-btn flex-1 py-2 rounded flex flex-col items-center justify-center text-on-surface hover:text-primary-fixed transition-colors">
-                            <span class="material-symbols-outlined text-[20px] mb-1">account_balance</span>
-                            <span class="font-label-caps text-[10px]">Transfer.</span>
+                        <button data-metodo="Transferencia" class="payment-method-btn flex-1 py-1 rounded flex flex-col items-center justify-center text-on-surface hover:text-primary-fixed transition-colors border-0 bg-transparent">
+                            <span class="material-symbols-outlined text-[16px] mb-0.5">account_balance</span>
+                            <span class="font-label-caps text-[9px]">Transfer.</span>
                         </button>
                     </div>
                 </div>
                 <!-- Action Button -->
-                <button id="btn-procesar-pago" class="w-full py-4 bg-primary-container text-on-primary-container rounded-lg font-headline-md text-headline-md hover:bg-surface-tint transition-all active:scale-[0.98] neon-glow flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span class="material-symbols-outlined">point_of_sale</span>
+                <button id="btn-procesar-pago" class="w-full py-2.5 bg-primary-container text-on-primary-container rounded-lg font-title-md text-title-md hover:bg-surface-tint transition-all active:scale-[0.98] neon-glow flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span class="material-symbols-outlined text-[20px]">point_of_sale</span>
                     Procesar Pago
                 </button>
             </div>
@@ -143,6 +156,8 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
             const grid = document.getElementById('membresias-grid');
             const otrosGrid = document.getElementById('otros-grid');
             const loading = document.getElementById('loading-pos');
+            const productosSearchBar = document.getElementById('productos-search-bar');
+            const productosSearchInput = document.getElementById('productos-search-input') as HTMLInputElement;
             
             const cartItemsContainer = document.getElementById('cart-items-container');
             const cartItemCount = document.getElementById('cart-item-count');
@@ -175,12 +190,86 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                     if(target.dataset.tab === 'membresias') {
                         grid.classList.remove('hidden');
                         otrosGrid.classList.add('hidden');
+                        productosSearchBar.classList.add('hidden');
+                        productosSearchInput.value = '';
                     } else {
                         grid.classList.add('hidden');
                         otrosGrid.classList.remove('hidden');
+                        productosSearchBar.classList.remove('hidden');
+                        renderProductos(''); // Mostrar todos al cambiar a pestaña Productos
                     }
                 });
             });
+
+            // Renderiza el grid de productos aplicando un filtro de texto (nombre o categoría)
+            const renderProductos = (filtro: string) => {
+                otrosGrid.innerHTML = '';
+                const texto = filtro.toLowerCase();
+                const productosFiltrados = texto
+                    ? catalogoProductos.filter(p =>
+                        p.nombre.toLowerCase().includes(texto) ||
+                        p.categoria.toLowerCase().includes(texto)
+                    )
+                    : catalogoProductos;
+
+                if (productosFiltrados.length === 0) {
+                    otrosGrid.innerHTML = `<p class="text-on-surface-variant col-span-4 text-center py-8">
+                        ${texto ? `No se encontraron productos para "<strong>${filtro}</strong>"` : 'No hay productos disponibles.'}
+                    </p>`;
+                    return;
+                }
+
+                productosFiltrados.forEach(producto => {
+                    const agotado = producto.stock <= 0;
+                    // Cantidad de este producto que ya está en el carrito
+                    const enCarrito = cart.find(i => i.codigo === producto.codigo)?.cantidad || 0;
+                    const stockAgotadoPorCarrito = enCarrito >= producto.stock;
+                    const deshabilitado = agotado || stockAgotadoPorCarrito;
+
+                    const card = document.createElement('div');
+                    card.className = `bg-surface-container rounded-xl border p-4 flex flex-col transition-colors group ${
+                        deshabilitado
+                            ? 'border-error/20 opacity-60 cursor-not-allowed'
+                            : 'border-outline-variant hover:border-primary-fixed/50'
+                    }`;
+
+                    const chipStock = agotado
+                        ? `<div class="absolute top-2 right-2 bg-error/10 px-2 py-1 rounded text-[10px] font-label-caps text-error border border-error/30">Agotado</div>`
+                        : stockAgotadoPorCarrito
+                        ? `<div class="absolute top-2 right-2 bg-error/10 px-2 py-1 rounded text-[10px] font-label-caps text-error border border-error/30">Máx. en carrito</div>`
+                        : `<div class="absolute top-2 right-2 bg-surface-container-low px-2 py-1 rounded text-[10px] font-label-caps text-on-surface-variant border border-outline-variant">Stock: ${producto.stock}</div>`;
+
+                    const btnAdd = deshabilitado
+                        ? `<button class="add-to-cart-btn w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant cursor-not-allowed border-0 opacity-40" disabled data-codigo="${producto.codigo}">
+                               <span class="material-symbols-outlined text-[18px]">block</span>
+                           </button>`
+                        : `<button class="add-to-cart-btn w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface hover:bg-primary-container hover:text-on-primary-container transition-colors cursor-pointer border-0" data-codigo="${producto.codigo}">
+                               <span class="material-symbols-outlined text-[18px]">add</span>
+                           </button>`;
+
+                    card.innerHTML = `
+                        <div class="h-32 bg-surface-container-highest rounded-lg mb-4 overflow-hidden relative flex items-center justify-center">
+                            <span class="material-symbols-outlined text-outline-variant text-3xl">image</span>
+                            ${chipStock}
+                        </div>
+                        <h3 class="font-data-table text-data-table text-on-surface mb-1 truncate">${producto.nombre}</h3>
+                        <p class="font-label-caps text-label-caps text-on-surface-variant mb-4 flex-1 text-xs">${producto.categoria}</p>
+                        <div class="flex justify-between items-center mt-auto">
+                            <span class="font-headline-md text-headline-md ${deshabilitado ? 'text-on-surface-variant' : 'text-primary-fixed'}">$${producto.precio}</span>
+                            ${btnAdd}
+                        </div>
+                    `;
+
+                    if (!deshabilitado) {
+                        card.querySelector('.add-to-cart-btn').addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            addToCart(producto);
+                        });
+                    }
+
+                    otrosGrid.appendChild(card);
+                });
+            };
 
             // Cart Totals and Render functions
             const updateCartTotals = () => {
@@ -221,20 +310,20 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                 cartItemsContainer.innerHTML = '';
                 cart.forEach(item => {
                     const itemDiv = document.createElement('div');
-                    itemDiv.className = "flex gap-4 items-center bg-surface-container-highest p-3 rounded-lg border border-outline-variant/50";
+                    itemDiv.className = "flex gap-3 items-center bg-surface-container-highest p-2.5 rounded-lg border border-outline-variant/50";
                     itemDiv.innerHTML = `
-                        <div class="w-12 h-12 bg-surface-container rounded flex items-center justify-center text-on-surface-variant overflow-hidden flex-shrink-0">
+                        <div class="w-10 h-10 bg-surface-container rounded flex items-center justify-center text-on-surface-variant overflow-hidden flex-shrink-0">
                             ${item.imagen ? `<img src="${item.imagen}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />` : ''}
-                            <span class="material-symbols-outlined text-[20px] ${item.imagen ? 'hidden' : ''}">image</span>
+                            <span class="material-symbols-outlined text-[18px] ${item.imagen ? 'hidden' : ''}">image</span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h4 class="font-data-table text-data-table text-on-surface truncate">${item.nombre}</h4>
+                            <h4 class="font-body-md text-sm text-on-surface truncate leading-tight">${item.nombre}</h4>
                             <div class="flex items-center gap-2 mt-1">
                                 <button class="btn-qty-minus w-5 h-5 bg-surface-container rounded flex items-center justify-center text-on-surface hover:text-primary-fixed cursor-pointer border-0" data-codigo="${item.codigo}">
                                     <span class="material-symbols-outlined text-[14px]">remove</span>
                                 </button>
                                 <span class="font-label-caps text-label-caps text-xs">${item.cantidad}</span>
-                                <button class="btn-qty-plus w-5 h-5 bg-surface-container rounded flex items-center justify-center text-on-surface hover:text-primary-fixed cursor-pointer border-0" data-codigo="${item.codigo}">
+                                <button class="btn-qty-plus w-5 h-5 bg-surface-container rounded flex items-center justify-center transition-colors border-0 ${item.cantidad >= item.stock ? 'text-on-surface-variant opacity-40 cursor-not-allowed' : 'text-on-surface hover:text-primary-fixed cursor-pointer'}" data-codigo="${item.codigo}" ${item.cantidad >= item.stock ? 'disabled' : ''}>
                                     <span class="material-symbols-outlined text-[14px]">add</span>
                                 </button>
                             </div>
@@ -254,7 +343,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                     btn.addEventListener('click', (e) => {
                         const target = e.currentTarget as HTMLElement;
                         const codigo = target.dataset.codigo;
-                        const idx = cart.findIndex(i => i.codigo === codigo);
+                        const idx = cart.findIndex(i => String(i.codigo) === String(codigo));
                         if (idx > -1) {
                             if (cart[idx].cantidad > 1) {
                                 cart[idx].cantidad--;
@@ -262,6 +351,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                                 cart.splice(idx, 1);
                             }
                             renderCart();
+                            renderProductos(productosSearchInput.value.trim());
                         }
                     });
                 });
@@ -270,10 +360,14 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                     btn.addEventListener('click', (e) => {
                         const target = e.currentTarget as HTMLElement;
                         const codigo = target.dataset.codigo;
-                        const idx = cart.findIndex(i => i.codigo === codigo);
+                        const idx = cart.findIndex(i => String(i.codigo) === String(codigo));
                         if (idx > -1) {
-                            cart[idx].cantidad++;
-                            renderCart();
+                            const stockMax = cart[idx].stock ?? Infinity;
+                            if (cart[idx].cantidad < stockMax) {
+                                cart[idx].cantidad++;
+                                renderCart();
+                                renderProductos(productosSearchInput.value.trim());
+                            }
                         }
                     });
                 });
@@ -282,10 +376,11 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
                     btn.addEventListener('click', (e) => {
                         const target = e.currentTarget as HTMLElement;
                         const codigo = target.dataset.codigo;
-                        const idx = cart.findIndex(i => i.codigo === codigo);
+                        const idx = cart.findIndex(i => String(i.codigo) === String(codigo));
                         if (idx > -1) {
                             cart.splice(idx, 1);
                             renderCart();
+                            renderProductos(productosSearchInput.value.trim());
                         }
                     });
                 });
@@ -294,13 +389,19 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
             };
 
             const addToCart = (producto) => {
-                const existing = cart.find(i => i.codigo === producto.codigo);
+                const existing = cart.find(i => String(i.codigo) === String(producto.codigo));
                 if (existing) {
-                    existing.cantidad++;
+                    // Validar que no supere el stock disponible
+                    const stockMax = producto.stock ?? Infinity;
+                    if (existing.cantidad < stockMax) {
+                        existing.cantidad++;
+                    }
                 } else {
                     cart.push({ ...producto, cantidad: 1 });
                 }
                 renderCart();
+                // Re-renderizar tarjetas para actualizar el estado del botón si se llegó al límite
+                renderProductos(productosSearchInput.value.trim());
             };
 
             // Fetch memberships and products
@@ -342,45 +443,15 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
 
                 if (dataProductos.exito) {
                     catalogoProductos = dataProductos.datos;
-                    otrosGrid.innerHTML = '';
-                    
-                    if (catalogoProductos.length === 0) {
-                        otrosGrid.innerHTML = '<p class="text-on-surface-variant col-span-4 text-center py-8">No hay productos disponibles.</p>';
-                    } else {
-                        catalogoProductos.forEach(producto => {
-                            const card = document.createElement('div');
-                            card.className = "bg-surface-container rounded-xl border border-outline-variant p-4 flex flex-col hover:border-primary-fixed/50 transition-colors group";
-                            
-                            card.innerHTML = `
-                                <div class="h-32 bg-surface-container-highest rounded-lg mb-4 overflow-hidden relative flex items-center justify-center">
-                                    ${producto.imagen ? `<img src="${producto.imagen}" alt="${producto.nombre}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />` : ''}
-                                    <span class="material-symbols-outlined text-outline-variant text-3xl ${producto.imagen ? 'hidden' : ''}">image</span>
-                                    <div class="absolute top-2 right-2 bg-surface-container-low px-2 py-1 rounded text-[10px] font-label-caps text-on-surface-variant border border-outline-variant">
-                                        Stock: ${producto.stock}
-                                    </div>
-                                </div>
-                                <h3 class="font-data-table text-data-table text-on-surface mb-1 truncate">${producto.nombre}</h3>
-                                <p class="font-label-caps text-label-caps text-on-surface-variant mb-4 flex-1 text-xs">${producto.categoria}</p>
-                                <div class="flex justify-between items-center mt-auto">
-                                    <span class="font-headline-md text-headline-md text-primary-fixed">$${producto.precio}</span>
-                                    <button class="add-to-cart-btn w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface hover:bg-primary-container hover:text-on-primary-container transition-colors cursor-pointer border-0" data-codigo="${producto.codigo}">
-                                        <span class="material-symbols-outlined text-[18px]">add</span>
-                                    </button>
-                                </div>
-                            `;
-                            
-                            // Event
-                            card.querySelector('.add-to-cart-btn').addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                addToCart(producto);
-                            });
-                            
-                            otrosGrid.appendChild(card);
-                        });
-                    }
+                    renderProductos(''); // Render inicial sin filtro
                 } else {
                     otrosGrid.innerHTML = `<p class="text-error col-span-4">${dataProductos.mensaje || 'Error cargando catálogo de productos.'}</p>`;
                 }
+
+                // Búsqueda local en tiempo real
+                productosSearchInput.addEventListener('input', () => {
+                    renderProductos(productosSearchInput.value.trim());
+                });
 
             } catch (err) {
                 console.error("Error", err);
@@ -397,10 +468,10 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
             paymentBtns.forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     paymentBtns.forEach(b => {
-                        b.className = "payment-method-btn flex-1 py-2 rounded flex flex-col items-center justify-center text-on-surface hover:text-primary-fixed transition-colors border-0 bg-transparent";
+                        b.className = "payment-method-btn flex-1 py-1 rounded flex flex-col items-center justify-center text-on-surface hover:text-primary-fixed transition-colors border-0 bg-transparent";
                     });
                     const targetBtn = e.currentTarget as HTMLElement;
-                    targetBtn.className = "payment-method-btn flex-1 py-2 bg-surface-container rounded shadow-sm flex flex-col items-center justify-center text-primary-fixed border border-primary-fixed/30 transition-colors";
+                    targetBtn.className = "payment-method-btn flex-1 py-1 bg-surface-container rounded shadow-sm flex flex-col items-center justify-center text-primary-fixed border border-primary-fixed/30 transition-colors";
                     selectedMetodoPago = targetBtn.getAttribute('data-metodo');
                 });
             });
